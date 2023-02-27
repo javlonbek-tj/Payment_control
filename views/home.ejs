@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Attendance Dashboard | By Code Info</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <ul>
+          <li>
+            <a href="#" class="logo">
+              <img src="/image/admin_image.png" />
+              <span class="nav-item">Admin</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/addUser">
+              <i class="fas fa-user-plus"></i>
+              <span class="nav-item">O'quvchi qo'shish</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/messages">
+              <i class="fas fa-comment"></i>
+              <% if(unreadMessages.length) {%>
+              <span class="message_number"><%= unreadMessages.length%></span>
+              <% } %>
+              <span class="nav-item">Xabarlar</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fas fa-database"></i>
+              <span class="nav-item">Report</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fas fa-chart-bar"></i>
+              <span class="nav-item">Attendance</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fas fa-cog"></i>
+              <span class="nav-item">Setting</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="logout">
+              <i class="fas fa-sign-out-alt"></i>
+              <span class="nav-item">Log out</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <section class="main">
+        <div class="main-top">
+          <h1>Fanlar ro'yxati</h1>
+          <i class="fas fa-user-cog"></i>
+        </div>
+        <div class="users">
+          <div class="card">
+            <img src="/image/math_image.png" />
+            <h4>Matematika</h4>
+            <p>Yanvar</p>
+            <div class="per">
+              <table>
+                <tr>
+                  <td><span>120</span></td>
+                  <td><span>100</span></td>
+                </tr>
+                <tr>
+                  <td>O'quvchilar</td>
+                  <td>To'ladi</td>
+                </tr>
+              </table>
+            </div>
+            <button>Umumiy ro'yxat</button>
+          </div>
+          <div class="card">
+            <img src="/image/english_image.png" />
+            <h4>Ingliz tili</h4>
+            <p>Yanvar</p>
+            <div class="per">
+              <table>
+                <tr>
+                  <td><span>80</span></td>
+                  <td><span>70</span></td>
+                </tr>
+                <tr>
+                  <td>O'quvchilar</td>
+                  <td>To'ladi</td>
+                </tr>
+              </table>
+            </div>
+            <button>Umumiy ro'yxat</button>
+          </div>
+          <div class="card">
+            <img src="/image/physics_image.png" />
+            <h4>Fizika</h4>
+            <p>Yanvar</p>
+            <div class="per">
+              <table>
+                <tr>
+                  <td><span>80</span></td>
+                  <td><span>70</span></td>
+                </tr>
+                <tr>
+                  <td>O'quvchilar</td>
+                  <td>To'ladi</td>
+                </tr>
+              </table>
+            </div>
+            <button>Umumiy ro'yxat</button>
+          </div>
+          <div class="card">
+            <img src="/image/chemistry_image.png" />
+            <h4>Kimyo</h4>
+            <p>Yamvar</p>
+            <div class="per">
+              <table>
+                <tr>
+                  <td><span>80</span></td>
+                  <td><span>70</span></td>
+                </tr>
+                <tr>
+                  <td>O'quvchilar</td>
+                  <td>To'ladi</td>
+                </tr>
+              </table>
+            </div>
+            <button>Umumiy ro'yxat</button>
+          </div>
+        </div>
+
+        <section class="attendance">
+          <div class="attendance-list">
+            <h1>Matematika</h1>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>FIO</th>
+                  <th>Kurs nomi</th>
+                  <th>Mentor</th>
+                  <th>Oy</th>
+                  <th>To'lov holati</th>
+                  <th>Batafsil</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(let user of users) { %>
+                <tr>
+                  <td><%= user.id %></td>
+                  <td><%= user.firstname%> <%= user.lastname%></td>
+                  <td><%= user.course %></td>
+                  <td><%= user.mentor %></td>
+                  <td><%= user.month %></td>
+                  <% if(user.paymentstatus === "To'lanmadi") {%>
+                  <td><i class="fas fa-circle circle_red"></i><%= user.paymentstatus %></td>
+                  <% } %> <% if(user.paymentstatus === "Jarayonda") {%>
+                  <td><i class="fas fa-circle circle_blue"></i><%= user.paymentstatus %></td>
+                  <% } %> <% if(user.paymentstatus === "To'landi") {%>
+                  <td><i class="fas fa-circle circle_green"></i><%= user.paymentstatus %></td>
+                  <% } %>
+                  <td><a href="/users/<%= user.id %>">Ko'rish</a></td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </div>
+  </body>
+</html>

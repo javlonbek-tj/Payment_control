@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Attendance Dashboard | By Code Info</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+<section class="signup container">
+    <div class="mb-5 fs-4"><i class="fa-solid fa-backward text-warning me-2"></i> <a href="/users/<%= user.id%>">Orqaga</a></div> 
+  <div class="signup-content text-center">
+    <div class="signup-form">
+      <h2 class="text-success">To'lovni chekini yuklash</h1>
+        <div class="register-form fs-4 mt-5" id="register-form">
+        <div class="form-group mb-5">
+            <label for="firstname"><i class="fa-solid fa-user me-4 fs-5"></i></label>
+          <input
+            type="text"
+            value="<%= user.firstname %>" disabled
+          />
+        </div>
+        <div class="form-group mb-5">
+            <label for="lastname"><i class="fa-solid fa-user me-4 fs-5 text-primary"></i></label>
+          <input
+            type="text"
+            value="<%= user.lastname %>" disabled
+          />
+        </div>
+        <div class="form-group mb-5">
+            <label for="course"><i class="fa-solid fa-book me-4 fs-5"></i></label>
+          <input
+            type="text"
+            value="<%= user.course %>" disabled
+          />
+        </div>
+        <div class="form-group mb-5">
+            <label for="mentor"><i class="fa-solid fa-person-chalkboard me-4 fs-5"></i></label>
+          <input
+            type="text"
+            value="<%= user.mentor %>" disabled
+          />
+        </div>
+        <div class="form-group mb-5">
+            <label for="month"><i class="fa-solid fa-passport me-4 fs-5 text-success"></i></label>
+          <input
+            type="text"
+            value="<%= user.month %>" disabled
+          />
+        </div> 
+        <form action="/users/payment" method="POST" enctype="multipart/form-data">
+        <div class="form-group mb-5 d-flex align-items-center">
+            <div class="form-element">
+                <input type="file" id="file-1" class="d-none" name="cash" />
+                <label for="file-1" id="file-1-preview" class="ms-3"> 
+                    <img src="/image/add_image.png" class="img-fluid bg-white rounded-circle"
+                    style="width: 70px; height: 70px" alt="PDF chek"/>
+                </label>
+                </div>
+                <h4 class="text-muted ms-4 d-flex" id="cash_info">To'lov chekini yuklang</h4>
+        </div>
+        <div class="form-button mt-5">
+          <input type="hidden" name="userId" value="<%= user.id%>"> 
+          <button type="submit" class="form-submit py-3 px-5">To'lovni yakunlash</button>
+        </div>
+      </form> 
+      </div>
+    </div>
+  </div>
+</section>
+<script src="/js/image.js"></script>
+<script src="/js/index.js"></script>
+</body>
+</html>

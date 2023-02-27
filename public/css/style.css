@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+
+:root {
+  --orange: #ff7800;
+  --black: #130f40;
+  --light-color: #666;
+  --box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+  --border: 0.2rem solid rgba(0, 0, 0, 0.1);
+  --outline: 0.1rem solid rgba(0, 0, 0, 0.1);
+  --outline-hover: 0.2rem solid var(--black);
+}
+
+* {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+a {
+  text-decoration: none;
+}
+.modal-open {
+  padding-right: 0 !important;
+}
+
+html {
+  font-size: 62.5%;
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+body {
+  background: #eee;
+}
+
+section {
+  padding: 2rem 9%;
+}
+.mtt {
+  margin-top: 20rem;
+}
+.mts {
+  margin-top: 6rem;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  box-shadow: 0 0 0 30px white inset !important;
+}
+
+.signup {
+  width: 400px;
+  margin: 4rem auto;
+}
+.signup-content {
+  background: #fff;
+  padding: 3rem 3rem 1.2rem 3rem;
+  border-radius: 1.2rem;
+}
+.form-group input,
+.form-group select {
+  width: 80%;
+  border-bottom: 1px solid #999;
+  padding-bottom: 6px;
+}
+.form-group input:focus::-webkit-input-placeholder {
+  color: var(--black);
+}
+.form-group input:disabled {
+  background-color: #fff;
+}
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--black);
+}
+
+.form-group .authError {
+  border-bottom: 2px solid red;
+}
+.invalidInput {
+  border: 1px solid red;
+}
+.form-button input:hover {
+  background-color: #bbb;
+}
+.form-submit {
+  border-radius: 8px;
+  background-color: #ddd;
+}
+
+/* Success error popup */
+
+.alert {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  z-index: 9999;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 400;
+  text-align: center;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 1.6rem 5rem;
+  -webkit-box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.25);
+}
+.alert--success {
+  background-color: #20bf6b;
+}
+.alert--error {
+  background-color: #eb4d4b;
+}
+iframe {
+  width: 600px;
+  height: 60vh;
+}

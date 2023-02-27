@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Attendance Dashboard | By Code Info</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+<section class="signup container">
+  <div class="signup-content text-center">
+    <div class="signup-form">
+      <h2 class="text-success">Kirish</h1>
+        <form method="POST" class="register-form fs-4 mt-5" id="register-form" action="/login" novalidate>
+        <div class="form-group mb-5">
+          <label for="passport"><i class="fa-solid fa-user me-4 fs-5 text-warning"></i></label>
+          <input
+            type="text"
+            name="passport"
+            id="passport"
+            placeholder="Login"
+          />
+        </div>
+        <div class="form-group mb-5">
+          <label for="pass"><i class="fa-solid fa-lock me-4 fs-5 text-warning"></i></label>
+          <input
+            type="text"
+            name="phoneNumber"
+            id="phoneNumber"
+            placeholder="Parol"
+          />
+        </div>
+        <div class="form-button mt-5">
+          <input type="submit" name="signup" id="signup" class="form-submit py-3 px-5" value="Ro'yxatdan o'tish" />
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+</body>
+</html>

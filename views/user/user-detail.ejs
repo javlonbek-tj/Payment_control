@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Attendance Dashboard | By Code Info</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <section class="mts profile">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-lg-8 mb-4 mb-lg-0">
+            <div class="mb-5 fs-4">
+              <i class="fa-solid fa-backward text-warning me-2"></i>
+              <a href="/users">Asosiy sahifa</a>
+            </div>
+            <div class="card mb-3">
+              <div class="row g-0">
+                <div
+                  class="col-md-4 bg-secondary gradient-custom text-center text-white"
+                  style="border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem"
+                >
+                  <img
+                    src="<% if(user.photo) { %>  /<%= user.photo %> <% } else { %> /image/commentUser.png <% } %>"
+                    alt="Avatar"
+                    class="img-fluid mt-5 mb-2 rounded-circle"
+                    style="width: 80px; height: 80px"
+                  />
+                  <form action="/user/deletePicture" method="POST">
+                    <button type="submit" class="bg-secondary">
+                      <i class="fa-solid fa-trash text-warning fs-5 mb-3"></i>
+                    </button>
+                  </form>
+                  <h4 class="mb-3"><%= user.firstname %></h4>
+                  <a href="/admin/<%=user.id%>/changeUserInfo" class="text-white">
+                    <i class="far fa-edit mt-2 fs-3 mb-5"></i>
+                  </a>
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body p-4">
+                    <h2 class="text-success">Mening ma'lumotlarim</h2>
+                    <hr class="mt-0 mb-5" />
+                    <div class="pt-1">
+                      <div class="mb-2 d-flex justify-content-between">
+                        <h4>FIO:</h4>
+                        <p class="text-muted fs-4"><%= user.firstname%> <%= user.lastname%></p>
+                      </div>
+                      <div class="mb-2 d-flex justify-content-between">
+                        <h4>Kurs nomi:</h4>
+                        <p class="text-muted fs-4"><%= user.course%></p>
+                      </div>
+                      <div class="mb-2 d-flex justify-content-between">
+                        <h4>Mentor:</h4>
+                        <p class="text-muted fs-4"><%= user.mentor%></p>
+                      </div>
+                      <div class="mb-2 d-flex justify-content-between">
+                        <h4>Kurs boshlagan sana:</h4>
+                        <p class="text-muted fs-4"><%= user.createdAt %></p>
+                      </div>
+                      <div class="mb-2 d-flex justify-content-between">
+                        <h4>Telefon raqami:</h4>
+                        <p class="text-muted fs-4"><%= user.phonenumber %></p>
+                      </div>
+                      <div class="mb-5 d-flex justify-content-between">
+                        <h4><%= user.month %> oyi to'lovi:</h4>
+                        <p class="text-muted fs-4"><%= user.paymentstatus%></p>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between fs-4">
+                      <a href="/users/<%= user.id%>/payment">To'lov qilish</a>
+                      <a href="/user/messages">Xabarlarim</a>
+                      <a href="/user/changeProfile">Sozlamalar</a>
+                      <a href="/logout">Chiqish</a>
+                    </div>
+                    <hr class="mt-0 mb-4" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

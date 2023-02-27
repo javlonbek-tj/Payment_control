@@ -1,0 +1,28 @@
+http://localhost:8000/users/
+
+###
+
+POST http://localhost:8000/users HTTP/1.1
+content-type: application/json
+
+{
+    "firstname": "Tp",
+    "lastname": "Developer",
+    "course": "matem",
+    "mentor": "somethingelse",
+    "passport": "123456789",
+    "phoneNumber": "123456789"
+}
+
+###
+
+PUT http://localhost:8000/users/3 HTTP/1.1
+content-type: application/json
+
+{
+    "firstname": "somebody"
+}
+
+###
+
+DELETE http://localhost:8000/users/1 HTTP/1.1
