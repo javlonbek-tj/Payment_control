@@ -35,7 +35,7 @@ const postAddUser = async (req, res, next) => {
     if (!user) {
       return res.status(400).json('User not added');
     }
-    res.redirect('/users');
+    res.redirect('/');
   } catch (err) {
     console.log(err);
   }
@@ -80,7 +80,7 @@ const postUpdateUser = async (req, res, next) => {
       passport ? passport : oldPassport,
       phoneNumber ? phoneNumber : oldPhoneNumber,
     );
-    res.redirect(`/users/${userId}`);
+    res.redirect(`/${userId}`);
   } catch (err) {
     console.log(err);
   }
@@ -115,10 +115,9 @@ const getMessages = async (req, res, next) => {
 const confirmPayment = async (req, res, next) => {
   try {
     const { userId, messageId } = req.body;
-    const user = await UserRepo.changePaymentStatusToPaid(userId);
-    deleteFile(user.paymentcashurl);
+    await UserRepo.changePaymentStatusToPaid(userId);
     await MessageRepo.deleteById(messageId);
-    res.redirect('/users');
+    res.redirect('/');
   } catch (err) {
     console.log(err);
   }

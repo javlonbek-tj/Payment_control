@@ -19,7 +19,7 @@ app.use(upload.single('cash'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/users', userRoutes);
+app.use(userRoutes);
 app.use(authRoutes);
 app.use('/admin', adminRoutes);
 

@@ -27,9 +27,9 @@ const postLogin = async (req, res, next) => {
     const { passport, phoneNumber } = req.body;
     const isUserExists = await UserRepo.isUserExists(passport, phoneNumber);
     if (!isUserExists) {
-      return res.redirect('/');
+      return res.redirect('/login');
     }
-    res.redirect('/users');
+    res.redirect('/');
   } catch (err) {
     console.log(err);
   }

@@ -23,7 +23,7 @@
           <div class="col-lg-8 mb-4 mb-lg-0">
             <div class="mb-5 fs-4">
               <i class="fa-solid fa-backward text-warning me-2"></i>
-              <a href="/users">Asosiy sahifa</a>
+              <a href="/">Asosiy sahifa</a>
             </div>
             <div class="card mb-3">
               <div class="row g-0">
@@ -72,13 +72,21 @@
                         <h4>Telefon raqami:</h4>
                         <p class="text-muted fs-4"><%= user.phonenumber %></p>
                       </div>
-                      <div class="mb-5 d-flex justify-content-between">
+                      <div class="mb-2 d-flex justify-content-between">
                         <h4><%= user.month %> oyi to'lovi:</h4>
                         <p class="text-muted fs-4"><%= user.paymentstatus%></p>
                       </div>
+                      <% if(user.paymentstatus === "To'landi") {%>
+                      <div class="mb-5 d-flex justify-content-between">
+                        <h4>To'lov cheki:</h4>
+                        <a href="/<%= user.paymentcashurl%>" class="fs-4">PDF</a>
+                      </div>
+                      <% } %>
                     </div>
                     <div class="d-flex justify-content-between fs-4">
-                      <a href="/users/<%= user.id%>/payment">To'lov qilish</a>
+                      <% if(user.paymentstatus === "To'lanmadi") {%>
+                      <a href="/<%= user.id%>/payment">To'lov qilish</a>
+                      <% }%>
                       <a href="/user/messages">Xabarlarim</a>
                       <a href="/user/changeProfile">Sozlamalar</a>
                       <a href="/logout">Chiqish</a>

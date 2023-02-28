@@ -60,7 +60,7 @@ const postPayment = async (req, res, next) => {
       `${user.firstname} ${user.month} oyi uchun to'lovni amalga oshirdi`,
       userId,
     );
-    res.redirect('/users');
+    res.redirect('/');
   } catch (err) {
     console.log(err);
   }
