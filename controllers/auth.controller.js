@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken');
 const UserRepo = require('../repos/user-repo');
+const AdminRepo = require('../repos/admin-repo');
+const { promisify } = require('util');
 
 const createSendToken = (user, req, res) => {
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
@@ -25,17 +27,65 @@ const getLogin = async (req, res, next) => {
 const postLogin = async (req, res, next) => {
   try {
     const { passport, phoneNumber } = req.body;
-    const isUserExists = await UserRepo.isUserExists(passport, phoneNumber);
-    if (!isUserExists) {
+    const user = await AdminRepo.isAdminExists(passport, phoneNumber);
+    if (!user) {
       return res.redirect('/login');
     }
+    createSendToken(user, req, res);
     res.redirect('/');
   } catch (err) {
     console.log(err);
   }
 };
 
+const isAuth = async (req, res, next) => {
+  try {
+    if (!req.cookies.jwt) {
+      return next();
+    }
+    // 1) verify token
+    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+
+    // 2) Check if user still exists
+    const currentUser = await AdminRepo.findById(decoded.id);
+    if (!currentUser) {
+      return next();
+    }
+
+    // THERE IS A LOGGED IN USER
+    req.user = currentUser;
+    return next();
+  } catch (err) {
+    console.log(err);
+  }
+  next();
+};
+
+const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (req.user) {
+      if (!roles.includes(req.user.role)) {
+        return res.redirect('/');
+      }
+      next();
+    }
+    next();
+  };
+};
+
+const logout = (req, res, next) => {
+  try {
+    res.clearCookie('jwt');
+    res.redirect('/');
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
 module.exports = {
   getLogin,
   postLogin,
+  isAuth,
+  logout,
+  restrictTo,
 };

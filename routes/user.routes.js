@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const isAuth = require('../middleware/is-auth');
 
 const router = Router();
 
@@ -7,12 +8,11 @@ const {
   getOneUser,
   getPayment,
   postPayment,
-  get,
 } = require('../controllers/user.controller');
 
-router.get('/', getAllUsers);
-router.get('/:userId', getOneUser);
-router.get('/:userId/payment', getPayment);
-router.post('/payment', postPayment);
+router.get('/', isAuth, getAllUsers);
+router.get('/:userId', isAuth, getOneUser);
+router.get('/:userId/payment', isAuth, getPayment);
+router.post('/payment', isAuth, postPayment);
 
 module.exports = router;

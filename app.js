@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const upload = require('./services/fileUpload');
+const { isAuth } = require('./controllers/auth.controller');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
@@ -19,8 +21,18 @@ app.use(upload.single('cash'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(userRoutes);
+app.use(cookieParser());
+
+app.use(isAuth);
+
+// Set global user
+app.use(function (req, res, next) {
+  res.locals.user = req.user || null;
+  next();
+});
+
 app.use(authRoutes);
+app.use(userRoutes);
 app.use('/admin', adminRoutes);
 
 //MIDDLEWARES

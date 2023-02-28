@@ -15,6 +15,10 @@ class UserRepo {
       'INSERT INTO users(firstname, lastname, course, mentor, month, passport, phoneNumber) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *; ',
       [firstname, lastname, course, mentor, month, passport, phoneNumber],
     );
+    await pool.query(
+      'INSERT INTO admins(firstname, lastname, course, passport, phoneNumber) VALUES ($1, $2, $3, $4, $5);',
+      [firstname, lastname, course, passport, phoneNumber],
+    );
     return toCamelCase(rows)[0];
   }
   static async update(id, firstname, lastname, course, mentor, passport, phoneNumber) {

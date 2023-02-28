@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 8000;
 
 pool
   .connect({
-    host: 'localhost',
+    host: 'manny.db.elephantsql.com',
     port: 5432,
     user,
     database,
