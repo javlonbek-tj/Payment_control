@@ -16,8 +16,8 @@ const {
   confirmPayment,
 } = require('../controllers/admin.controller');
 
-router.get('/signup', getAdminSignUp);
-router.post('/signup', postAdminSignUp);
+router.get('/addAdmin', isAuth, restrictTo('admin'), getAdminSignUp);
+router.post('/signup', isAuth, restrictTo('admin'), postAdminSignUp);
 router.get('/addUser', isAuth, restrictTo('admin'), getAddUser);
 router.post('/addUser', isAuth, restrictTo('admin'), postAddUser);
 router.get('/:userId/changeUserInfo', isAuth, restrictTo('admin'), getUpdateUser);

@@ -28,19 +28,19 @@ nav:hover {
   width: 280px;
   transition: 1s;
 }
-.logo {
+.admin {
   text-align: center;
   display: flex;
   margin: 10px 0 0 10px;
   padding-bottom: 3rem;
 }
 
-.logo img {
+.admin img {
   width: 45px;
   height: 45px;
   border-radius: 50%;
 }
-.logo span {
+.admin span {
   font-weight: bold;
   padding-left: 15px;
   font-size: 18px;
@@ -73,6 +73,19 @@ a:hover {
 a:hover i {
   color: #34af6d;
   transition: 0.5s;
+}
+.logo {
+  color: rgb(38, 38, 168);
+  padding: 3px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.logo:hover {
+  background-color: rgb(226, 226, 226);
+  color: rgb(44, 44, 97);
+}
+.admin:hover {
+  background-color: #fff;
 }
 .logout {
   position: absolute;
@@ -130,15 +143,15 @@ a:hover i {
   margin: auto;
 }
 .users .per span {
-  padding: 5px 8px;
-  border-radius: 10px;
+  padding: 5px 12px;
+  border-radius: 5px;
   background: rgb(223, 223, 223);
 }
 .users td {
   font-size: 14px;
   padding-right: 15px;
 }
-.users .card button {
+.users .card a {
   width: 100%;
   margin-top: 8px;
   padding: 7px;
@@ -147,7 +160,7 @@ a:hover i {
   background: transparent;
   border: 1px solid #4ad489;
 }
-.users .card button:hover {
+.users .card a:hover {
   background: #4ad489;
   color: #fff;
   transition: 0.5s;
@@ -234,11 +247,55 @@ table thead tr {
   position: absolute;
   left: 18px;
 }
+
+/*  Filtering starts here */
+
+.filter {
+  max-width: 900px;
+  margin: 1.2rem auto;
+}
+.filter_items {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 0.8rem;
+}
+.filtering input,
+.filtering select,
+.filtering button {
+  padding: 0.6rem 1.4rem;
+  width: 180px;
+  border-radius: 7px;
+  border: 1px solid #fff;
+}
+
+.filtering a {
+  padding: 0.6rem 1.4rem;
+  width: 60px;
+  border-radius: 7px;
+  border: 1px solid #fff;
+}
+.filtering button,
+.filtering a {
+  cursor: pointer;
+  transition: 0.5s;
+}
+.filtering input:hover,
+.filtering select:hover {
+  border: 1px solid black;
+}
+.filtering button:hover,
+.filtering a:hover {
+  background-color: #ddd;
+}
+
 @media (max-width: 991px) {
   .nav-item {
     display: none;
   }
   nav:hover {
     width: 90px;
+  }
+  .users .card img {
+    display: none;
   }
 }

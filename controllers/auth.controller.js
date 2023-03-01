@@ -63,11 +63,8 @@ const isAuth = async (req, res, next) => {
 
 const restrictTo = (...roles) => {
   return (req, res, next) => {
-    if (req.user) {
-      if (!roles.includes(req.user.role)) {
-        return res.redirect('/');
-      }
-      next();
+    if (req.user && !roles.includes(req.user.role)) {
+      return res.redirect('/login');
     }
     next();
   };
@@ -78,7 +75,7 @@ const logout = (req, res, next) => {
     res.clearCookie('jwt');
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    console.log(err);
   }
 };
 

@@ -82,6 +82,7 @@
             id="passport"
             placeholder="Pasport seriya va raqam"
             value="<%= (update) ? user.passport : '' %>"
+            <%= (update) ? "disabled" : "" %>
           />
         </div>
         <div class="form-group mb-5">
@@ -92,6 +93,7 @@
               id="phoneNumber"
               placeholder="Telefon raqami"
               value="<%= (update) ? user.phonenumber : '' %>"
+              <%= (update) ? "disabled" : "" %>
             />
           </div>
         <div class="form-button mt-5">

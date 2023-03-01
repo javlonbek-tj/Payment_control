@@ -11,11 +11,11 @@
   </head>
   <body>
     <div class="container">
-      <% if(true) {%>
+      <% if(user.role === 'admin') {%>
       <nav>
         <ul>
           <li>
-            <a href="#" class="logo">
+            <a href="#" class="admin">
               <img src="/image/admin_image.png" />
               <span class="nav-item">Admin</span>
             </a>
@@ -36,9 +36,9 @@
             </a>
           </li>
           <li>
-            <a href="#">
-              <i class="fas fa-database"></i>
-              <span class="nav-item">Report</span>
+            <a href="/admin/addAdmin">
+              <i class="fas fa-user"></i>
+              <span class="nav-item">Admin qo'shish</span>
             </a>
           </li>
           <li>
@@ -65,19 +65,19 @@
       <% } %>
       <section class="main">
         <div class="main-top">
-          <h1>Fanlar ro'yxati</h1>
+          <a href="/" class="logo">Payment Control</a>
           <i class="fas fa-user-cog"></i>
         </div>
         <div class="users">
           <div class="card">
             <img src="/image/math_image.png" />
             <h4>Matematika</h4>
-            <p>Yanvar</p>
+            <p><%= currentMonth%></p>
             <div class="per">
               <table>
                 <tr>
-                  <td><span>120</span></td>
-                  <td><span>100</span></td>
+                  <td><span><%= mathUsers ? mathUsers.length : 0 %></span></td>
+                  <td><span><%= mathPaidUsers ? mathPaidUsers.length : 0 %></span></td>
                 </tr>
                 <tr>
                   <td>O'quvchilar</td>
@@ -85,17 +85,17 @@
                 </tr>
               </table>
             </div>
-            <button>Umumiy ro'yxat</button>
+            <a href="/?course=math">Umumiy ro'yxat</a>
           </div>
           <div class="card">
             <img src="/image/english_image.png" />
             <h4>Ingliz tili</h4>
-            <p>Yanvar</p>
+            <p><%= currentMonth%></p>
             <div class="per">
               <table>
                 <tr>
-                  <td><span>80</span></td>
-                  <td><span>70</span></td>
+                  <td><span><%= englishUsers ? englishUsers.length : 0 %></span></td>
+                  <td><span><%= englishPaidUsers ? englishPaidUsers.length : 0 %></span></td>
                 </tr>
                 <tr>
                   <td>O'quvchilar</td>
@@ -103,17 +103,17 @@
                 </tr>
               </table>
             </div>
-            <button>Umumiy ro'yxat</button>
+            <a href="/?course=english">Umumiy ro'yxat</a>
           </div>
           <div class="card">
             <img src="/image/physics_image.png" />
             <h4>Fizika</h4>
-            <p>Yanvar</p>
+            <p><%= currentMonth%></p>
             <div class="per">
               <table>
                 <tr>
-                  <td><span>80</span></td>
-                  <td><span>70</span></td>
+                  <td><span><%= physicsUsers ? physicsUsers.length : 0 %></span></td>
+                  <td><span><%= physicsPaidUsers ? physicsPaidUsers.length : 0 %></span></td>
                 </tr>
                 <tr>
                   <td>O'quvchilar</td>
@@ -121,17 +121,17 @@
                 </tr>
               </table>
             </div>
-            <button>Umumiy ro'yxat</button>
+            <a href="/?course=physics">Umumiy ro'yxat</a>
           </div>
           <div class="card">
             <img src="/image/chemistry_image.png" />
             <h4>Kimyo</h4>
-            <p>Yamvar</p>
+            <p><%= currentMonth%></p>
             <div class="per">
               <table>
                 <tr>
-                  <td><span>80</span></td>
-                  <td><span>70</span></td>
+                  <td><span><%= chemistryUsers ? chemistryUsers.length : 0 %></span></td>
+                  <td><span><%= chemistryPaidUsers ? chemistryPaidUsers.length : 0 %></span></td>
                 </tr>
                 <tr>
                   <td>O'quvchilar</td>
@@ -139,13 +139,65 @@
                 </tr>
               </table>
             </div>
-            <button>Umumiy ro'yxat</button>
+            <a href="/?course=chemistry">Umumiy ro'yxat</a>
           </div>
         </div>
 
         <section class="attendance">
+          <section class="filter fs-4 d-flex justify-content-center mx-auto">
+            <form class="filter_items" action="/products" method="GET">
+              <div class="filtering">
+                <select name="course" id="course">
+                  <option selected disabled>Kursni tanlang</option>
+                  <option value="Matematika">Matematika</option>
+                  <option value="Ingliz tili">Ingliz tili</option>
+                  <option value="Fizika">Fizika</option>
+                  <option value="Kimyo">Kimyo</option>
+                </select>
+              </div>
+              <div class="filtering">
+                <select name="paymentStatus" id="paymentStatus">
+                  <option selected disabled>To'lov holati</option>
+                  <option value="To'langan">To'langan</option>
+                  <option value="Jarayonda">Jarayonda</option>
+                  <option value="To'lanmagan">To'lanmagan</option>
+                  <option value="Rad etilgan">Rad etilgan</option>
+                </select>
+              </div>
+              <div class="filtering">
+                <select name="mentor" id="mentor">
+                  <option selected disabled>Mentor</option>
+                  <option value="Raximov Alisher">Raximov Alisher</option>
+                  <option value="Qodirov Nodir">Qodirov Nodir</option>
+                  <option value="Fozilov Kozim">Fozilov Kozim</option>
+                  <option value="Sattorov Tolib">Sattorov Tolib</option>
+                </select>
+              </div>
+              <div class="filtering">
+                <input type="date" name="from" />
+              </div>
+              <div class="filtering">
+                <input type="date" name="to" />
+              </div>
+              <div class="filtering">
+                <button type="submit">Qidirish</button>
+              </div>
+              <div class="filtering">
+                <button type="submit">Excel</button>
+              </div>
+              <div class="filtering d-flex align-items-center">
+                <a href="/products" class="text-center"
+                  ><i class="fa-solid fa-arrows-rotate"></i
+                ></a>
+              </div>
+            </form>
+          </section>
           <div class="attendance-list">
-            <h1>Matematika</h1>
+            <% if(courseName) {%>
+            <h1><%= courseName %></h1>
+            <% } else { %>
+            <h1>Barcha o'quvchilar</h1>
+            <% } %>
             <table class="table">
               <thead>
                 <tr>

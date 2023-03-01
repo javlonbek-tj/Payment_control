@@ -6,6 +6,10 @@ class UserRepo {
     const { rows } = await pool.query('SELECT * FROM users;');
     return toCamelCase(rows);
   }
+  static async findByCourse(course) {
+    const { rows } = await pool.query('SELECT * FROM users WHERE course = $1;', [course]);
+    return toCamelCase(rows);
+  }
   static async findById(id) {
     const { rows } = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
     return toCamelCase(rows)[0];
@@ -16,8 +20,8 @@ class UserRepo {
       [firstname, lastname, course, mentor, month, passport, phoneNumber],
     );
     await pool.query(
-      'INSERT INTO admins(firstname, lastname, course, passport, phoneNumber) VALUES ($1, $2, $3, $4, $5);',
-      [firstname, lastname, course, passport, phoneNumber],
+      'INSERT INTO admins(firstname, lastname, passport, phoneNumber) VALUES ($1, $2, $3, $4);',
+      [firstname, lastname, passport, phoneNumber],
     );
     return toCamelCase(rows)[0];
   }
