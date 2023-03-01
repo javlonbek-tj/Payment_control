@@ -1,6 +1,6 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { formatData, getCurrentMonth } = require('../repos/utils/formatData');
+const { formatData } = require('../repos/utils/formatData');
 const { deleteFile } = require('../services/file');
 const AdminRepo = require('../repos/admin-repo');
 
@@ -26,11 +26,9 @@ const postAdminSignUp = async (req, res, next) => {
 
 const getAddUser = (req, res, next) => {
   try {
-    const currentMonth = getCurrentMonth();
     res.render('admin/addUser', {
       pageTitle: "Ro'yxatga olish",
       update: null,
-      currentMonth,
     });
   } catch (err) {
     console.log(err);
@@ -39,12 +37,12 @@ const getAddUser = (req, res, next) => {
 
 const postAddUser = async (req, res, next) => {
   try {
-    const { firstname, lastname, course, mentor, month, passport, phoneNumber } = req.body;
+    const { firstname, lastname, course, mentor, date, passport, phoneNumber } = req.body;
     const isUserExists = await UserRepo.isUserExists(passport, phoneNumber);
     if (isUserExists) {
       return res.status(400).json('User already exists');
     }
-    await UserRepo.insert(firstname, lastname, course, mentor, month, passport, phoneNumber);
+    await UserRepo.insert(firstname, lastname, course, mentor, date, passport, phoneNumber);
     res.redirect('/');
   } catch (err) {
     console.log(err);

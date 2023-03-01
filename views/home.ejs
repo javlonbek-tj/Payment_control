@@ -70,9 +70,7 @@
         </div>
         <div class="users">
           <div class="card">
-            <img src="/image/math_image.png" />
             <h4>Matematika</h4>
-            <p><%= currentMonth%></p>
             <div class="per">
               <table>
                 <tr>
@@ -88,9 +86,7 @@
             <a href="/?course=math">Umumiy ro'yxat</a>
           </div>
           <div class="card">
-            <img src="/image/english_image.png" />
             <h4>Ingliz tili</h4>
-            <p><%= currentMonth%></p>
             <div class="per">
               <table>
                 <tr>
@@ -106,9 +102,7 @@
             <a href="/?course=english">Umumiy ro'yxat</a>
           </div>
           <div class="card">
-            <img src="/image/physics_image.png" />
             <h4>Fizika</h4>
-            <p><%= currentMonth%></p>
             <div class="per">
               <table>
                 <tr>
@@ -124,9 +118,7 @@
             <a href="/?course=physics">Umumiy ro'yxat</a>
           </div>
           <div class="card">
-            <img src="/image/chemistry_image.png" />
             <h4>Kimyo</h4>
-            <p><%= currentMonth%></p>
             <div class="per">
               <table>
                 <tr>
@@ -145,7 +137,7 @@
 
         <section class="attendance">
           <section class="filter fs-4 d-flex justify-content-center mx-auto">
-            <form class="filter_items" action="/products" method="GET">
+            <form class="filter_items" action="/" method="GET">
               <div class="filtering">
                 <select name="course" id="course">
                   <option selected disabled>Kursni tanlang</option>
@@ -174,10 +166,13 @@
                 </select>
               </div>
               <div class="filtering">
-                <input type="date" name="from" />
+                <input type="date" id="date" name="dateFrom" />
               </div>
               <div class="filtering">
-                <input type="date" name="to" />
+                <input type="date" id="date" name="dateTo" />
+              </div>
+              <div class="filtering">
+                <input type="text" placeholder="Izlash..." name="search" />
               </div>
               <div class="filtering">
                 <button type="submit">Qidirish</button>
@@ -185,13 +180,11 @@
               <div class="filtering">
                 <button type="submit">Excel</button>
               </div>
-              <div class="filtering d-flex align-items-center">
-                <a href="/products" class="text-center"
-                  ><i class="fa-solid fa-arrows-rotate"></i
-                ></a>
-              </div>
             </form>
           </section>
+          <% if(!users) {%>
+          <h3>Hech narsa topilmadi.</h3>
+          <% } else { %>
           <div class="attendance-list">
             <% if(courseName) {%>
             <h1><%= courseName %></h1>
@@ -217,7 +210,7 @@
                   <td><%= user.firstname%> <%= user.lastname%></td>
                   <td><%= user.course %></td>
                   <td><%= user.mentor %></td>
-                  <td><%= user.month %></td>
+                  <td><%= user.date %></td>
                   <% if(user.paymentstatus === "To'lanmadi") {%>
                   <td><i class="fas fa-circle circle_red"></i><%= user.paymentstatus %></td>
                   <% } %> <% if(user.paymentstatus === "Jarayonda") {%>
@@ -231,8 +224,10 @@
               </tbody>
             </table>
           </div>
+          <% } %>
         </section>
       </section>
     </div>
+    <script src="/js/index.js"></script>
   </body>
 </html>

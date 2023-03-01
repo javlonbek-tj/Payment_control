@@ -1,38 +1,12 @@
-const cashBtn = document.querySelector('#cashBtn');
-
-/* alert starts here */
-
-const hideAlert = () => {
-  const el = document.querySelector('.alert');
-  if (el) {
-    el.parentElement.removeChild(el);
-  }
-};
-
-// type is 'success' or 'error'
-const showAlert = (type, msg, time = 3) => {
-  hideAlert();
-  const markup = `<div class="alert alert--${type}">${msg}</div>`;
-  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
-  setTimeout(hideAlert, time * 1000);
-};
-
-cashBtn.addEventListener('submit', async e => {
-  try {
-    e.preventDefault();
-    const userId = e.target.lastElementChild.firstElementChild.value;
-  
-    const res = await fetch(`/users/payment`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userId }),
-    });
-    if (res.ok) {
-      location.assign('/users');
-    }
-  } catch (err) {
-    console.log(err);
-  }
-});
+const d = new Date();
+const year = d.getFullYear();
+let month = d.getMonth() + 1;
+if (month < 10) {
+  month = '0' + month;
+}
+let date = d.getDate();
+if (date < 10) {
+  date = '0' + date;
+}
+const defaultDate = year + '-' + month + '-' + date;
+document.querySelectorAll('#date').forEach(d => (d.value = defaultDate));

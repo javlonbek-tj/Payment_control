@@ -1,40 +1,50 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { formatData, getCurrentMonth } = require('../repos/utils/formatData');
+const { formatData, getMonth } = require('../repos/utils/formatData');
 
 const getAllUsers = async (req, res, next) => {
   try {
     let users;
     let courseName;
-    if (req.query.course) {
-      courseName = req.query.course;
-      switch (courseName) {
+    if (req.query.search) {
+      const { search } = req.query;
+      users = await UserRepo.findPartial(search);
+    } else if (
+      req.query.course ||
+      req.query.mentor ||
+      req.query.paymentstatus ||
+      req.query.dateFrom ||
+      req.query.dateTo
+    ) {
+      let { course, mentor, paymentstatus, dateFrom, dateTo } = req.query;
+      switch (course) {
         case 'math':
-          courseName = 'Matematika';
+          course = 'Matematika';
           break;
         case 'physics':
-          courseName = 'Fizika';
+          course = 'Fizika';
           break;
         case 'english':
-          courseName = 'Ingliz tili';
+          course = 'Ingliz tili';
           break;
         case 'chemistry':
-          courseName = 'Kimyo';
+          course = 'Kimyo';
       }
-      users = await UserRepo.findByCourse(courseName);
+      users = await UserRepo.findByCategories(course, mentor, paymentstatus, dateFrom, dateTo);
     } else {
       users = await UserRepo.find();
     }
-    const mathUsers = users.filter(user => user.course === 'Matematika');
+    users.map(user => (user.date = getMonth(user.date)));
+    const allUsers = await UserRepo.find();
+    const mathUsers = allUsers.filter(user => user.course === 'Matematika');
     const mathPaidUsers = mathUsers.filter(user => user.paymentstatus === 'paid');
-    const englishUsers = users.filter(user => user.course === 'Ingliz tili');
+    const englishUsers = allUsers.filter(user => user.course === 'Ingliz tili');
     const englishPaidUsers = englishUsers.filter(user => user.paymentstatus === 'paid');
-    const physicsUsers = users.filter(user => user.course === 'Fizika');
+    const physicsUsers = allUsers.filter(user => user.course === 'Fizika');
     const physicsPaidUsers = physicsUsers.filter(user => user.paymentstatus === 'paid');
-    const chemistryUsers = users.filter(user => user.course === 'Kimyo');
+    const chemistryUsers = allUsers.filter(user => user.course === 'Kimyo');
     const chemistryPaidUsers = chemistryUsers.filter(user => user.paymentstatus === 'paid');
     const unreadMessages = await MessageRepo.find();
-    const currentMonth = getCurrentMonth();
     formatData(users);
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
@@ -45,7 +55,6 @@ const getAllUsers = async (req, res, next) => {
       englishUsers,
       physicsUsers,
       chemistryUsers,
-      currentMonth,
       mathPaidUsers,
       englishPaidUsers,
       physicsPaidUsers,

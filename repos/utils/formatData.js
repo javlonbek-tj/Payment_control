@@ -14,11 +14,10 @@ const month = [
   'Noyabr',
   'Dekabr',
 ];
-const date = new Date();
 
-const getCurrentMonth = () => {
-  const currentMonth = month[date.getMonth()];
-  return currentMonth;
+const getMonth = queryDate => {
+  const getMonth = month[new Date(queryDate).getMonth()];
+  return getMonth;
 };
 
 const checkPaymentStatus = item => {
@@ -30,6 +29,9 @@ const checkPaymentStatus = item => {
   }
   if (item.paymentstatus === 'paid') {
     item.paymentstatus = "To'landi";
+  }
+  if (item.paymentstatus === 'rejected') {
+    item.paymentstatus = 'Rad etilgan';
   }
   return item;
 };
@@ -49,5 +51,5 @@ const formatData = items => {
 
 module.exports = {
   formatData,
-  getCurrentMonth,
+  getMonth,
 };

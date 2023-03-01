@@ -57,21 +57,8 @@
         </div>
         <% if(!update) {%>
             <div class="form-group mb-5">
-                <label for="month"><i class="fa-solid fa-calendar-days me-4 fs-5"></i></label>
-                <select name="month">
-                  <option value="Yanvar"<%= (currentMonth === 'Yanvar') ? 'selected' : ''%>>Yanvar</option>
-                  <option value="Fevral" <%= (currentMonth === 'Fevral') ? 'selected' : ''%>>Fevral</option>
-                  <option value="Mart" <%= (currentMonth === 'Mart') ? 'selected' : ''%>>Mart</option>
-                  <option value="Aprel" <%= (currentMonth === 'Aprel') ? 'selected' : ''%>>Aprel</option>
-                  <option value="May" <%= (currentMonth === 'May') ? 'selected' : ''%>>May</option>
-                  <option value="Iyun" <%= (currentMonth === 'Iyun') ? 'selected' : ''%>>Iyun</option>
-                  <option value="Iyul" <%= (currentMonth === 'Iyul') ? 'selected' : ''%>>Iyul</option>
-                  <option value="Avgust" <%= (currentMonth === 'Avgust') ? 'selected' : ''%>>Avgust</option>
-                  <option value="Sentabr" <%= (currentMonth === 'Sentabr') ? 'selected' : ''%>>Sentabr</option>
-                  <option value="Oktabr" <%= (currentMonth === 'Oktabr') ? 'selected' : ''%>>Oktabr</option>
-                  <option value="Noyabr" <%= (currentMonth === 'Noyabr') ? 'selected' : ''%>>Noyabr</option>
-                  <option value="Dekabr" <%= (currentMonth === 'Dekabr') ? 'selected' : ''%>>Dekabr</option>
-                </select>
+                <label for="date"><i class="fa-solid fa-calendar-days me-4 fs-5"></i></label>
+                <input type="date" id="date" name="date">
               </div>
               <% } %>
         <div class="form-group mb-5">
@@ -106,5 +93,6 @@
     </div>
   </div>
 </section>
+<script src="/js/index.js"></script>
 </body>
 </html>
