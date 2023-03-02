@@ -14,8 +14,10 @@ const {
   deleteUser,
   getMessages,
   confirmPayment,
+  getUsersExcel,
 } = require('../controllers/admin.controller');
 
+router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
 router.get('/addAdmin', isAuth, restrictTo('admin'), getAdminSignUp);
 router.post('/signup', isAuth, restrictTo('admin'), postAdminSignUp);
 router.get('/addUser', isAuth, restrictTo('admin'), getAddUser);

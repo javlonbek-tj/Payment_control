@@ -1,4 +1,4 @@
-const d = new Date();
+/* const d = new Date();
 const year = d.getFullYear();
 let month = d.getMonth() + 1;
 if (month < 10) {
@@ -9,4 +9,4 @@ if (date < 10) {
   date = '0' + date;
 }
 const defaultDate = year + '-' + month + '-' + date;
-document.querySelectorAll('#date').forEach(d => (d.value = defaultDate));
+document.querySelectorAll('#date').forEach(d => (d.value = defaultDate)); */

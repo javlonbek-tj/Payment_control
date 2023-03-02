@@ -3,6 +3,7 @@ const MessageRepo = require('../repos/message-repo');
 const { formatData } = require('../repos/utils/formatData');
 const { deleteFile } = require('../services/file');
 const AdminRepo = require('../repos/admin-repo');
+const excelJS = require('exceljs');
 
 const getAdminSignUp = async (req, res, next) => {
   try {
@@ -131,6 +132,25 @@ const confirmPayment = async (req, res, next) => {
   }
 };
 
+const getUsersExcel = async (req, res, next) => {
+  try {
+    const workbook = new excelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Students');
+    const path = '/files';
+    worksheet.columns = [
+      { header: 'S no.', key: 's_no', width: 10 },
+      { header: 'Ism Familiya', key: 'firstname', width: 10 },
+      { header: 'Sharif', key: 'lastname', width: 10 },
+      { header: 'Kurs', key: 'course', width: 10 },
+      { header: 'Mentor', key: 'mentor', width: 10 },
+      { header: 'Telefon raqami', key: 'phonenumber', width: 10 },
+      { header: "To'lov holati", key: 'paymentstatus', width: 10 },
+    ];
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   getAdminSignUp,
   postAdminSignUp,
@@ -141,4 +161,5 @@ module.exports = {
   deleteUser,
   getMessages,
   confirmPayment,
+  getUsersExcel,
 };

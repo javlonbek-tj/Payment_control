@@ -1,6 +1,7 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
 const { formatData, getMonth } = require('../repos/utils/formatData');
+const findByCategories = require('../repos/utils/filtering');
 
 const getAllUsers = async (req, res, next) => {
   try {
@@ -30,11 +31,15 @@ const getAllUsers = async (req, res, next) => {
         case 'chemistry':
           course = 'Kimyo';
       }
-      users = await UserRepo.findByCategories(course, mentor, paymentstatus, dateFrom, dateTo);
+      courseName = course;
+      users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo);
     } else {
       users = await UserRepo.find();
     }
-    users.map(user => (user.date = getMonth(user.date)));
+    if (users) {
+      users.map(user => (user.date = getMonth(user.date)));
+      formatData(users);
+    }
     const allUsers = await UserRepo.find();
     const mathUsers = allUsers.filter(user => user.course === 'Matematika');
     const mathPaidUsers = mathUsers.filter(user => user.paymentstatus === 'paid');
@@ -45,7 +50,6 @@ const getAllUsers = async (req, res, next) => {
     const chemistryUsers = allUsers.filter(user => user.course === 'Kimyo');
     const chemistryPaidUsers = chemistryUsers.filter(user => user.paymentstatus === 'paid');
     const unreadMessages = await MessageRepo.find();
-    formatData(users);
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
       users,

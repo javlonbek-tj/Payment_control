@@ -62,11 +62,8 @@ class UserRepo {
     const { rows } = await pool.query(`SELECT * FROM users WHERE firstname ILIKE '%${query}%';`);
     return toCamelCase(rows);
   }
-  static async findByCategories(course, mentor, paymentstatus, dateFrom, dateTo) {
-    const { rows } = await pool.query(
-      'SELECT * FROM users WHERE course = $1, mentor = $2, paymentstatus = $3, dateFrom > $4, dateTo < $5;',
-      [course, mentor, paymentstatus, dateFrom, dateTo],
-    );
+  static async findByCategories(filtering) {
+    const { rows } = await pool.query(filtering);
     return toCamelCase(rows);
   }
 }
