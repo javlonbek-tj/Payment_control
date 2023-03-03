@@ -3,7 +3,9 @@ const MessageRepo = require('../repos/message-repo');
 const { formatData } = require('../repos/utils/formatData');
 const { deleteFile } = require('../services/file');
 const AdminRepo = require('../repos/admin-repo');
+const { filteredUsers } = require('./user.controller');
 const excelJS = require('exceljs');
+const { filter } = require('compression');
 
 const getAdminSignUp = async (req, res, next) => {
   try {
@@ -136,9 +138,9 @@ const getUsersExcel = async (req, res, next) => {
   try {
     const workbook = new excelJS.Workbook();
     const worksheet = workbook.addWorksheet('Students');
-    const path = '/files';
+    const path = 'files';
     worksheet.columns = [
-      { header: 'S no.', key: 's_no', width: 10 },
+      { header: '№', key: 'id', width: 10 },
       { header: 'Ism Familiya', key: 'firstname', width: 10 },
       { header: 'Sharif', key: 'lastname', width: 10 },
       { header: 'Kurs', key: 'course', width: 10 },
@@ -146,6 +148,25 @@ const getUsersExcel = async (req, res, next) => {
       { header: 'Telefon raqami', key: 'phonenumber', width: 10 },
       { header: "To'lov holati", key: 'paymentstatus', width: 10 },
     ];
+    let counter = 1;
+    filteredUsers[0].forEach(user => {
+      user.id = counter;
+      worksheet.addRow(user); // Add data in worksheet
+      counter++;
+    });
+    // Making first line in excel bold
+    worksheet.getRow(1).eachCell(cell => {
+      cell.font = { bold: true };
+    });
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', `attachment; filename=users.xlsx`);
+
+    return workbook.xlsx.write(res).then(() => {
+      res.status(200);
+    });
   } catch (err) {
     console.log(err);
   }

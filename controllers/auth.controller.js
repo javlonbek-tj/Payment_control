@@ -73,7 +73,7 @@ const restrictTo = (...roles) => {
 const logout = (req, res, next) => {
   try {
     res.clearCookie('jwt');
-    res.redirect('/');
+    res.redirect('/login');
   } catch (err) {
     console.log(err);
   }

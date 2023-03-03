@@ -11,23 +11,28 @@
   </head>
   <body>
     <div class="container">
-      <% if(user.role === 'admin') {%>
       <nav>
         <ul>
           <li>
             <a href="#" class="admin">
-              <img src="/image/admin_image.png" />
-              <span class="nav-item">Admin</span>
+              <img
+                src="<%= (user.role === 'admin') ? '/image/admin_image.png' : '/image/commentUser.png' %>"
+              />
+              <span class="nav-item"
+                ><%= (user.role === 'admin') ? 'Admin' : user.firstname %></span
+              >
             </a>
           </li>
           <li>
-            <a href="/admin/addUser">
-              <i class="fas fa-user-plus"></i>
-              <span class="nav-item">O'quvchi qo'shish</span>
+            <a href="<%= (user.role === 'admin') ? '/admin/addUser' : '/user.id/info'%>">
+              <i class="<%= (user.role === 'admin') ? 'fas fa-user-plus' : 'fas fa-user'%>"></i>
+              <span class="nav-item"
+                ><%= (user.role === 'admin') ? "O'quvchi qo'shish" : "Ma'lumotlarim"%></span
+              >
             </a>
           </li>
           <li>
-            <a href="/admin/messages">
+            <a href="<%= (user.role === 'admin') ? '/admin/messages' : '/user.id/messages' %>">
               <i class="fas fa-comment"></i>
               <% if(unreadMessages.length) {%>
               <span class="message_number"><%= unreadMessages.length%></span>
@@ -35,13 +40,15 @@
               <span class="nav-item">Xabarlar</span>
             </a>
           </li>
+          <% if(user.role === 'admin') {%>
           <li>
             <a href="/admin/addAdmin">
               <i class="fas fa-user"></i>
               <span class="nav-item">Admin qo'shish</span>
             </a>
           </li>
-          <li>
+          <% }%>
+          <!-- <li>
             <a href="#">
               <i class="fas fa-chart-bar"></i>
               <span class="nav-item">Attendance</span>
@@ -52,21 +59,19 @@
               <i class="fas fa-cog"></i>
               <span class="nav-item">Setting</span>
             </a>
-          </li>
+          </li> -->
 
           <li>
-            <a href="#" class="logout">
+            <a href="/logout">
               <i class="fas fa-sign-out-alt"></i>
-              <span class="nav-item">Log out</span>
+              <span class="nav-item">Chiqish</span>
             </a>
           </li>
         </ul>
       </nav>
-      <% } %>
       <section class="main">
         <div class="main-top">
           <a href="/" class="logo">Payment Control</a>
-          <i class="fas fa-user-cog"></i>
         </div>
         <div class="users">
           <div class="card">
@@ -177,9 +182,15 @@
               <div class="filtering">
                 <button type="submit">Qidirish</button>
               </div>
+              <% if(user.role === 'admin') {%>
               <div class="filtering">
-                <button type="submit">Excel</button>
+                <a href="/admin/downloadExcel">Excel</a>
               </div>
+              <% } else { %>
+              <div class="filtering">
+                <a href="/"><i class="fa-solid fa-arrows-rotate"></i></a>
+              </div>
+              <% } %>
             </form>
           </section>
           <% if(!users) {%>
@@ -204,21 +215,21 @@
                 </tr>
               </thead>
               <tbody>
-                <% for(let user of users) { %>
+                <% for(let singleUser of users) { %>
                 <tr>
-                  <td><%= user.id %></td>
-                  <td><%= user.firstname%> <%= user.lastname%></td>
-                  <td><%= user.course %></td>
-                  <td><%= user.mentor %></td>
-                  <td><%= user.date %></td>
-                  <% if(user.paymentstatus === "To'lanmadi") {%>
-                  <td><i class="fas fa-circle circle_red"></i><%= user.paymentstatus %></td>
-                  <% } %> <% if(user.paymentstatus === "Jarayonda") {%>
-                  <td><i class="fas fa-circle circle_blue"></i><%= user.paymentstatus %></td>
-                  <% } %> <% if(user.paymentstatus === "To'landi") {%>
-                  <td><i class="fas fa-circle circle_green"></i><%= user.paymentstatus %></td>
+                  <td><%= singleUser.id %></td>
+                  <td><%= singleUser.firstname%> <%= singleUser.lastname%></td>
+                  <td><%= singleUser.course %></td>
+                  <td><%= singleUser.mentor %></td>
+                  <td><%= singleUser.date %></td>
+                  <% if(singleUser.paymentstatus === "To'lanmadi") {%>
+                  <td><i class="fas fa-circle circle_red"></i><%= singleUser.paymentstatus %></td>
+                  <% } %> <% if(singleUser.paymentstatus === "Jarayonda") {%>
+                  <td><i class="fas fa-circle circle_blue"></i><%= singleUser.paymentstatus %></td>
+                  <% } %> <% if(singleUser.paymentstatus === "To'landi") {%>
+                  <td><i class="fas fa-circle circle_green"></i><%= singleUser.paymentstatus %></td>
                   <% } %>
-                  <td><a href="/<%= user.id %>">Ko'rish</a></td>
+                  <td><a href=<%= (singleUser.id === user.id) ? '/user.id' : '#'%>>Ko'rish</a></td>
                 </tr>
                 <% } %>
               </tbody>

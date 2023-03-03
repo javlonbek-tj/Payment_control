@@ -27,5 +27,6 @@ router.post('/changeUserInfo', isAuth, restrictTo('admin'), postUpdateUser);
 router.delete('/deleteUser/:userId', isAuth, restrictTo('admin'), deleteUser);
 router.get('/messages', isAuth, restrictTo('admin'), getMessages);
 router.post('/confirmPayment', isAuth, restrictTo('admin'), confirmPayment);
+router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
 
 module.exports = router;

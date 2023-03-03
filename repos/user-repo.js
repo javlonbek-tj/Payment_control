@@ -16,8 +16,8 @@ class UserRepo {
       [firstname, lastname, course, mentor, date, passport, phoneNumber],
     );
     await pool.query(
-      'INSERT INTO admins(firstname, lastname, passport, phoneNumber) VALUES ($1, $2, $3, $4);',
-      [firstname, lastname, passport, phoneNumber],
+      'INSERT INTO admins(firstname, lastname, passport, phoneNumber, role) VALUES ($1, $2, $3, $4, $5);',
+      [firstname, lastname, passport, phoneNumber, 'user'],
     );
     return toCamelCase(rows)[0];
   }
@@ -62,8 +62,11 @@ class UserRepo {
     const { rows } = await pool.query(`SELECT * FROM users WHERE firstname ILIKE '%${query}%';`);
     return toCamelCase(rows);
   }
-  static async findByCategories(filtering) {
-    const { rows } = await pool.query(filtering);
+  static async findByCategories(course, mentor, paymentstatus, dateFrom, dateTo) {
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE course = $1, mentor = $2, paymentstatus = $3, date BETWEEN $4 AND $5;',
+      [course, mentor, paymentstatus, dateFrom, dateTo],
+    );
     return toCamelCase(rows);
   }
 }

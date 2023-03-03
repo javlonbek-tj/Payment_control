@@ -3,6 +3,7 @@ const MessageRepo = require('../repos/message-repo');
 const { formatData, getMonth } = require('../repos/utils/formatData');
 const findByCategories = require('../repos/utils/filtering');
 
+const filteredUsers = [];
 const getAllUsers = async (req, res, next) => {
   try {
     let users;
@@ -35,6 +36,7 @@ const getAllUsers = async (req, res, next) => {
       users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo);
     } else {
       users = await UserRepo.find();
+      filteredUsers.push(users);
     }
     if (users) {
       users.map(user => (user.date = getMonth(user.date)));
@@ -77,9 +79,11 @@ const getOneUser = async (req, res, next) => {
       return res.status(400).json('No user Found');
     }
     formatData(user);
+    const month = getMonth(user.date);
     res.render('user/user-detail', {
       pageTitle: "Mening ma'lumotlarim",
       user,
+      month,
     });
   } catch (err) {
     console.log(err);
@@ -123,4 +127,5 @@ module.exports = {
   getOneUser,
   getPayment,
   postPayment,
+  filteredUsers,
 };
