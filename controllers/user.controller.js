@@ -3,7 +3,7 @@ const MessageRepo = require('../repos/message-repo');
 const { formatData, getMonth } = require('../repos/utils/formatData');
 const findByCategories = require('../repos/utils/filtering');
 
-const filteredUsers = [];
+let filteredUsers = [];
 const getAllUsers = async (req, res, next) => {
   try {
     let users;
@@ -36,11 +36,12 @@ const getAllUsers = async (req, res, next) => {
       users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo);
     } else {
       users = await UserRepo.find();
-      filteredUsers.push(users);
     }
     if (users) {
       users.map(user => (user.date = getMonth(user.date)));
       formatData(users);
+      filteredUsers.pop();
+      filteredUsers.push(users);
     }
     const allUsers = await UserRepo.find();
     const mathUsers = allUsers.filter(user => user.course === 'Matematika');
@@ -97,9 +98,11 @@ const getPayment = async (req, res, next) => {
     if (!user) {
       return res.status(400).json('User not found');
     }
+    const month = getMonth(user.date);
     res.render('user/payment', {
       pageTitle: "Ma'lumotlarni o'zgartirish",
       user,
+      month,
     });
   } catch (err) {
     console.log(err);
@@ -122,10 +125,25 @@ const postPayment = async (req, res, next) => {
   }
 };
 
+const getUserMessages = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const unreadMessages = await MessageRepo.findById(userId);
+    res.render('user/messages', {
+      pageTitle: 'Xabarlar',
+      unreadMessages,
+      userId,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   getAllUsers,
   getOneUser,
   getPayment,
   postPayment,
   filteredUsers,
+  getUserMessages,
 };

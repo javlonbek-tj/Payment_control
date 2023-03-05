@@ -32,7 +32,7 @@
             </a>
           </li>
           <li>
-            <a href="<%= (user.role === 'admin') ? '/admin/messages' : '/user.id/messages' %>">
+            <a href="<%= (user.role === 'admin') ? '/admin/messages' : '/messages/user.id' %>">
               <i class="fas fa-comment"></i>
               <% if(unreadMessages.length) {%>
               <span class="message_number"><%= unreadMessages.length%></span>
@@ -193,9 +193,6 @@
               <% } %>
             </form>
           </section>
-          <% if(!users) {%>
-          <h3>Hech narsa topilmadi.</h3>
-          <% } else { %>
           <div class="attendance-list">
             <% if(courseName) {%>
             <h1><%= courseName %></h1>
@@ -227,15 +224,26 @@
                   <% } %> <% if(singleUser.paymentstatus === "Jarayonda") {%>
                   <td><i class="fas fa-circle circle_blue"></i><%= singleUser.paymentstatus %></td>
                   <% } %> <% if(singleUser.paymentstatus === "To'landi") {%>
-                  <td><i class="fas fa-circle circle_green"></i><%= singleUser.paymentstatus %></td>
+                  <td>
+                    <i class="fas fa-circle circle_yellow"></i><%= singleUser.paymentstatus %>
+                  </td>
+                  <% } %><% if(singleUser.paymentstatus === "Rad etilgan") {%>
+                  <td>
+                    <i class="fas fa-circle circle_redish"></i><%= singleUser.paymentstatus %>
+                  </td>
                   <% } %>
-                  <td><a href=<%= (singleUser.id === user.id) ? '/user.id' : '#'%>>Ko'rish</a></td>
+                  <td>
+                    <% if(singleUser.passport == user.passport || user.role === 'admin') {%>
+                    <a href="/<%= singleUser.id%>">Ko'rish</a>
+                    <% } else { %>
+                    <a>Ko'rish</a>
+                    <% } %>
+                  </td>
                 </tr>
                 <% } %>
               </tbody>
             </table>
           </div>
-          <% } %>
         </section>
       </section>
     </div>

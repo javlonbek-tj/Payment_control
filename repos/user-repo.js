@@ -54,6 +54,13 @@ class UserRepo {
     );
     return toCamelCase(rows)[0];
   }
+  static async changePaymentStatusToRejected(userId) {
+    const { rows } = await pool.query(
+      `UPDATE users SET paymentstatus = 'rejected' WHERE id = $1 RETURNING *;`,
+      [userId],
+    );
+    return toCamelCase(rows)[0];
+  }
 
   static async uploadCash(pdf, userId) {
     await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2;`, [pdf, userId]);

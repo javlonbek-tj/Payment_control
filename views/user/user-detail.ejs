@@ -37,15 +37,12 @@
                     class="img-fluid mt-5 mb-2 rounded-circle"
                     style="width: 80px; height: 80px"
                   />
-                  <form action="/user/deletePicture" method="POST">
-                    <button type="submit" class="bg-secondary">
-                      <i class="fa-solid fa-trash text-warning fs-5 mb-3"></i>
-                    </button>
-                  </form>
                   <h4 class="mb-3"><%= user.firstname %></h4>
+                  <% if(user.role === 'admin') {%>
                   <a href="/admin/<%=user.id%>/changeUserInfo" class="text-white">
                     <i class="far fa-edit mt-2 fs-3 mb-5"></i>
                   </a>
+                  <% } %>
                 </div>
                 <div class="col-md-8">
                   <div class="card-body p-4">
@@ -87,8 +84,7 @@
                       <% if(user.paymentstatus === "To'lanmadi") {%>
                       <a href="/<%= user.id%>/payment">To'lov qilish</a>
                       <% }%>
-                      <a href="/user/messages">Xabarlarim</a>
-                      <a href="/user/changeProfile">Sozlamalar</a>
+                      <a href="/messages/<%=user.id%>">Xabarlarim</a>
                       <a href="/logout">Chiqish</a>
                     </div>
                     <hr class="mt-0 mb-4" />

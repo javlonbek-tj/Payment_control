@@ -8,7 +8,6 @@ exports.up = pgm => {
         id SERIAL PRIMARY KEY,
         message VARCHAR(200) NOT NULL,
         userId BIGINT REFERENCES users(id),
-        UNIQUE(userId),
         read BOOLEAN DEFAULT false
     )
     `);

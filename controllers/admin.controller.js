@@ -1,6 +1,6 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { formatData } = require('../repos/utils/formatData');
+const { formatData, getMonth } = require('../repos/utils/formatData');
 const { deleteFile } = require('../services/file');
 const AdminRepo = require('../repos/admin-repo');
 const { filteredUsers } = require('./user.controller');
@@ -126,8 +126,24 @@ const getMessages = async (req, res, next) => {
 const confirmPayment = async (req, res, next) => {
   try {
     const { userId, messageId } = req.body;
-    await UserRepo.changePaymentStatusToPaid(userId);
+    const user = await UserRepo.changePaymentStatusToPaid(userId);
+    const month = getMonth(user.date);
     await MessageRepo.deleteById(messageId);
+    await MessageRepo.insert(`Sizning ${month} oyi uchun to'lovingiz qabul qilindi`, userId);
+    res.redirect('/');
+  } catch (err) {
+    console.log(err);
+  }
+};
+const rejectPayment = async (req, res, next) => {
+  try {
+    const { userId, rejectionReason } = req.body;
+    const user = await UserRepo.changePaymentStatusToRejected(userId);
+    const month = getMonth(user.date);
+    await MessageRepo.insert(
+      `Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}`,
+      userId,
+    );
     res.redirect('/');
   } catch (err) {
     console.log(err);
@@ -182,5 +198,6 @@ module.exports = {
   deleteUser,
   getMessages,
   confirmPayment,
+  rejectPayment,
   getUsersExcel,
 };

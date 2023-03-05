@@ -14,6 +14,7 @@ const {
   deleteUser,
   getMessages,
   confirmPayment,
+  rejectPayment,
   getUsersExcel,
 } = require('../controllers/admin.controller');
 
@@ -27,6 +28,7 @@ router.post('/changeUserInfo', isAuth, restrictTo('admin'), postUpdateUser);
 router.delete('/deleteUser/:userId', isAuth, restrictTo('admin'), deleteUser);
 router.get('/messages', isAuth, restrictTo('admin'), getMessages);
 router.post('/confirmPayment', isAuth, restrictTo('admin'), confirmPayment);
+router.post('/rejectPayment', isAuth, restrictTo('admin'), rejectPayment);
 router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
 
 module.exports = router;

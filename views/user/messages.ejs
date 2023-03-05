@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title><%= pageTitle %></title>
+  </head>
+  <body>
+    <div class="container mts d-flex justify-content-center">
+      <div>
+        <div class="mb-5 fs-4">
+          <i class="fa-solid fa-backward text-warning me-2"></i> <a href="/<%= userId%>">Orqaga</a>
+        </div>
+        <% if(!unreadMessages) {%>
+        <h2>Xabarlar mavjud emas</h2>
+        <% } else {%><% for(let unreadMessage of unreadMessages) {%>
+        <div class="mb-5 d-flex align-items-center">
+          <img
+            class="me-4 rounded-circle"
+            src="/image/commentUser.png"
+            style="width: 40px; height: 40px"
+            ;
+            alt=""
+          />
+          <h4 class="mt-0"><%= unreadMessage.firstname %></h4>
+        </div>
+        <div class="ms-5 mb-4">
+          <h4 class="text-primary mb-4"><%= unreadMessage.message %>.</h4>
+          <p class="fs-4">
+            <span class="text-muted"> O'qituvchi: </span><%= unreadMessage.mentor %>
+          </p>
+          <p class="fs-4"><span class="text-muted"> Kurs: </span><%= unreadMessage.course %></p>
+          <iframe src="/<%= unreadMessage.paymentcashurl %>" frameborder="0" class="mb-5"></iframe>
+          <form action="/admin/confirmPayment" method="POST">
+            <input type="hidden" name="userId" value="<%= unreadMessage.userid %>" />
+            <input type="hidden" name="messageId" value="<%= unreadMessage.id %>" />
+            <button type="submit" class="btn btn-primary fs-4">Tasdiqlash</button>
+          </form>
+        </div>
+        <% } %> <% } %>
+        <hr class="text-danger" />
+      </div>
+    </div>
+  </body>
+</html>

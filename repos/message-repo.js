@@ -10,7 +10,7 @@ class MessageRepo {
   }
   static async findById(id) {
     const { rows } = await pool.query(
-      'SELECT * FROM messages JOIN users ON users.id = messages.userId WHERE id = $1',
+      'SELECT * FROM messages JOIN users ON users.id = messages.userId WHERE userId = $1',
       [id],
     );
     return toCamelCase(rows)[0];
