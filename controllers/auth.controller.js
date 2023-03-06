@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const UserRepo = require('../repos/user-repo');
-const AdminRepo = require('../repos/admin-repo');
 const { promisify } = require('util');
 
 const createSendToken = (user, req, res) => {
@@ -27,7 +26,7 @@ const getLogin = async (req, res, next) => {
 const postLogin = async (req, res, next) => {
   try {
     const { passport, phoneNumber } = req.body;
-    const user = await AdminRepo.isAdminExists(passport, phoneNumber);
+    const user = await UserRepo.isUserExists(passport, phoneNumber);
     if (!user) {
       return res.redirect('/login');
     }
@@ -47,7 +46,7 @@ const isAuth = async (req, res, next) => {
     const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
 
     // 2) Check if user still exists
-    const currentUser = await AdminRepo.findById(decoded.id);
+    const currentUser = await UserRepo.findById(decoded.id);
     if (!currentUser) {
       return next();
     }

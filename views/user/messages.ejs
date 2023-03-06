@@ -21,11 +21,11 @@
     <div class="container mts d-flex justify-content-center">
       <div>
         <div class="mb-5 fs-4">
-          <i class="fa-solid fa-backward text-warning me-2"></i> <a href="/<%= userId%>">Orqaga</a>
+          <i class="fa-solid fa-backward text-warning me-2"></i> <a href="/">Orqaga</a>
         </div>
-        <% if(!unreadMessages) {%>
+        <% if(myMessages.length <= 0) {%>
         <h2>Xabarlar mavjud emas</h2>
-        <% } else {%><% for(let unreadMessage of unreadMessages) {%>
+        <% } else {%><% for(let myMessage of myMessages) {%>
         <div class="mb-5 d-flex align-items-center">
           <img
             class="me-4 rounded-circle"
@@ -34,19 +34,16 @@
             ;
             alt=""
           />
-          <h4 class="mt-0"><%= unreadMessage.firstname %></h4>
+          <h4 class="mt-0"><%= myMessage.firstname %></h4>
         </div>
         <div class="ms-5 mb-4">
-          <h4 class="text-primary mb-4"><%= unreadMessage.message %>.</h4>
-          <p class="fs-4">
-            <span class="text-muted"> O'qituvchi: </span><%= unreadMessage.mentor %>
-          </p>
-          <p class="fs-4"><span class="text-muted"> Kurs: </span><%= unreadMessage.course %></p>
-          <iframe src="/<%= unreadMessage.paymentcashurl %>" frameborder="0" class="mb-5"></iframe>
-          <form action="/admin/confirmPayment" method="POST">
-            <input type="hidden" name="userId" value="<%= unreadMessage.userid %>" />
-            <input type="hidden" name="messageId" value="<%= unreadMessage.id %>" />
-            <button type="submit" class="btn btn-primary fs-4">Tasdiqlash</button>
+          <h4 class="text-danger mb-4"><%= myMessage.message %> <a href="/<%= user.paymentcashurl%>">Chekni ko'rish.</h4>
+          <p class="fs-4"><span class="text-muted"> O'qituvchi: </span><%= myMessage.mentor %></p>
+          <p class="fs-4"><span class="text-muted"> Kurs: </span><%= myMessage.course %></p>
+          <form action="/repay" method="POST">
+            <input type="hidden" name="messageId" value="<%= myMessage.id %>" />
+            <input type="hidden" name="userId" value="<%= user.id %>">
+            <button type="submit" class="btn btn-primary fs-4">Qaytadan to'lov qilish</button>
           </form>
         </div>
         <% } %> <% } %>

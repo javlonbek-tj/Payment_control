@@ -2,18 +2,19 @@ const pool = require('../pool');
 const toCamelCase = require('./utils/to-camel-case');
 
 class MessageRepo {
-  static async find() {
+  static async findAllWithoutMe(id) {
     const { rows } = await pool.query(
-      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE read = false;',
+      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE userId != $1',
+      [id],
     );
     return toCamelCase(rows);
   }
-  static async findById(id) {
+  static async findUnreadMessages(id) {
     const { rows } = await pool.query(
-      'SELECT * FROM messages JOIN users ON users.id = messages.userId WHERE userId = $1',
+      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE userId != $1 AND read = false',
       [id],
     );
-    return toCamelCase(rows)[0];
+    return toCamelCase(rows);
   }
   static async insert(text, userId) {
     const { rows } = await pool.query(
@@ -24,6 +25,9 @@ class MessageRepo {
   }
   static async deleteById(id) {
     await pool.query('DELETE FROM messages WHERE id = $1;', [id]);
+  }
+  static async makeMessagesRead(id) {
+    await pool.query('UPDATE messages SET read = true WHERE userId != $1;', [id]);
   }
 }
 

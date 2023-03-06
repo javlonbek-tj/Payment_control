@@ -78,10 +78,17 @@
                         <h4>To'lov cheki:</h4>
                         <a href="/<%= user.paymentcashurl%>" class="fs-4">PDF</a>
                       </div>
+                      <% } %> <% if(user.paymentstatus === "Rad etilgan") {%>
+                      <div class="mb-5 d-flex justify-content-between">
+                        <h4>To'lov cheki:</h4>
+                        <a href="/<%= user.paymentcashurl%>" class="fs-4">PDF</a>
+                      </div>
                       <% } %>
                     </div>
                     <div class="d-flex justify-content-between fs-4">
-                      <% if(user.paymentstatus === "To'lanmadi") {%>
+                      <% if(user.paymentstatus === "Rad etilgan") {%>
+                      <a href="/<%= user.id%>/payment">To'lov qilish</a>
+                      <% }%> <% if(user.paymentstatus === "To'lanmadi") {%>
                       <a href="/<%= user.id%>/payment">To'lov qilish</a>
                       <% }%>
                       <a href="/messages/<%=user.id%>">Xabarlarim</a>

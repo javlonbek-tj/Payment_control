@@ -216,7 +216,7 @@ table thead tr {
   transition: 0.5rem;
 }
 
-.circle_redish {
+.circle_red {
   color: red;
   margin-right: 5px;
 }
@@ -224,11 +224,11 @@ table thead tr {
   color: blue;
   margin-right: 5px;
 }
-.circle_red {
-  color: red;
+.circle_yellow {
+  color: yellow;
   margin-right: 5px;
 }
-.circle_yellow {
+.circle_yellowgreen {
   color: yellowgreen;
   margin-right: 5px;
 }

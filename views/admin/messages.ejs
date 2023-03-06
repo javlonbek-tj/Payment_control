@@ -23,9 +23,9 @@
         <div class="mb-5 fs-4">
           <i class="fa-solid fa-backward text-warning me-2"></i> <a href="/">Orqaga</a>
         </div>
-        <% if(!unreadMessages.length) {%>
+        <% if(!myMessages.length) {%>
         <h2>Xabarlar mavjud emas</h2>
-        <% } %><% for(let unreadMessage of unreadMessages) {%>
+        <% } %><% for(let myMessage of myMessages) {%>
         <div class="mb-5 d-flex align-items-center">
           <img
             class="me-4 rounded-circle"
@@ -34,19 +34,17 @@
             ;
             alt=""
           />
-          <h4 class="mt-0"><%= unreadMessage.firstname %></h4>
+          <h4 class="mt-0"><%= myMessage.firstname %></h4>
         </div>
         <div class="ms-5 mb-4">
-          <h4 class="text-primary mb-4"><%= unreadMessage.message %>.</h4>
-          <p class="fs-4">
-            <span class="text-muted"> O'qituvchi: </span><%= unreadMessage.mentor %>
-          </p>
-          <p class="fs-4"><span class="text-muted"> Kurs: </span><%= unreadMessage.course %></p>
-          <iframe src="/<%= unreadMessage.paymentcashurl %>" frameborder="0" class="mb-5"></iframe>
+          <h4 class="text-primary mb-4"><%= myMessage.message %>.</h4>
+          <p class="fs-4"><span class="text-muted"> O'qituvchi: </span><%= myMessage.mentor %></p>
+          <p class="fs-4"><span class="text-muted"> Kurs: </span><%= myMessage.course %></p>
+          <iframe src="/<%= myMessage.paymentcashurl %>" frameborder="0" class="mb-5"></iframe>
           <div class="d-flex">
             <form action="/admin/confirmPayment" method="POST" class="me-5">
-              <input type="hidden" name="userId" value="<%= unreadMessage.userid %>" />
-              <input type="hidden" name="messageId" value="<%= unreadMessage.id %>" />
+              <input type="hidden" name="userId" value="<%= myMessage.userid %>" />
+              <input type="hidden" name="messageId" value="<%= myMessage.id %>" />
               <button type="submit" class="btn btn-primary fs-4">Tasdiqlash</button>
             </form>
             <div class="accordion" id="accordionExample">
@@ -79,7 +77,8 @@
                         maxlength="500"
                       ></textarea>
                     </div>
-                    <input type="hidden" name="userId" value="<%= unreadMessage.userid %>" />
+                    <input type="hidden" name="messageId" value="<%= myMessage.id %>" />
+                    <input type="hidden" name="userId" value="<%= myMessage.userid %>" />
                     <button type="submit" class="btn btn-danger fs-5 m-3">Rad etish</button>
                   </form>
                 </div>

@@ -83,6 +83,12 @@
               <%= (update) ? "disabled" : "" %>
             />
           </div>
+          <div class="form-check mb-5 d-flex align-items-center ms-4">
+            <input class="me-4" type="checkbox" value="admin" name="isAdmin" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+             Admin
+             </label>
+          </div>
         <div class="form-button mt-5">
             <% if(update) { %>
                 <input type="hidden" name="userId" value="<%= user.id%>">

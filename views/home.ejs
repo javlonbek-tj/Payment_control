@@ -32,7 +32,11 @@
             </a>
           </li>
           <li>
-            <a href="<%= (user.role === 'admin') ? '/admin/messages' : '/messages/user.id' %>">
+            <% if(user.role === 'admin') {%>
+            <a href="/admin/messages">
+              <% } else { %>
+                <a href="/messages/<%=user.id%>"> 
+                  <% } %>
               <i class="fas fa-comment"></i>
               <% if(unreadMessages.length) {%>
               <span class="message_number"><%= unreadMessages.length%></span>
@@ -40,14 +44,6 @@
               <span class="nav-item">Xabarlar</span>
             </a>
           </li>
-          <% if(user.role === 'admin') {%>
-          <li>
-            <a href="/admin/addAdmin">
-              <i class="fas fa-user"></i>
-              <span class="nav-item">Admin qo'shish</span>
-            </a>
-          </li>
-          <% }%>
           <!-- <li>
             <a href="#">
               <i class="fas fa-chart-bar"></i>
@@ -222,15 +218,15 @@
                   <% if(singleUser.paymentstatus === "To'lanmadi") {%>
                   <td><i class="fas fa-circle circle_red"></i><%= singleUser.paymentstatus %></td>
                   <% } %> <% if(singleUser.paymentstatus === "Jarayonda") {%>
-                  <td><i class="fas fa-circle circle_blue"></i><%= singleUser.paymentstatus %></td>
-                  <% } %> <% if(singleUser.paymentstatus === "To'landi") {%>
                   <td>
                     <i class="fas fa-circle circle_yellow"></i><%= singleUser.paymentstatus %>
                   </td>
-                  <% } %><% if(singleUser.paymentstatus === "Rad etilgan") {%>
+                  <% } %> <% if(singleUser.paymentstatus === "To'landi") {%>
                   <td>
-                    <i class="fas fa-circle circle_redish"></i><%= singleUser.paymentstatus %>
+                    <i class="fas fa-circle circle_yellowgreen"></i><%= singleUser.paymentstatus %>
                   </td>
+                  <% } %><% if(singleUser.paymentstatus === "Rad etilgan") {%>
+                  <td><i class="fas fa-circle circle_blue"></i><%= singleUser.paymentstatus %></td>
                   <% } %>
                   <td>
                     <% if(singleUser.passport == user.passport || user.role === 'admin') {%>

@@ -2,6 +2,7 @@ const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
 const { formatData, getMonth } = require('../repos/utils/formatData');
 const findByCategories = require('../repos/utils/filtering');
+const { deleteFile } = require('../services/file');
 
 let filteredUsers = [];
 const getAllUsers = async (req, res, next) => {
@@ -52,7 +53,7 @@ const getAllUsers = async (req, res, next) => {
     const physicsPaidUsers = physicsUsers.filter(user => user.paymentstatus === 'paid');
     const chemistryUsers = allUsers.filter(user => user.course === 'Kimyo');
     const chemistryPaidUsers = chemistryUsers.filter(user => user.paymentstatus === 'paid');
-    const unreadMessages = await MessageRepo.find();
+    const unreadMessages = await MessageRepo.findUnreadMessages(req.user.id);
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
       users,
@@ -115,8 +116,9 @@ const postPayment = async (req, res, next) => {
     const pdfCashUrl = req.file.path;
     await UserRepo.uploadCash(pdfCashUrl, userId);
     const user = await UserRepo.changePaymentStatusToProgress(userId);
+    const month = getMonth(user.date);
     await MessageRepo.insert(
-      `${user.firstname} ${user.month} oyi uchun to'lovni amalga oshirdi`,
+      `${user.firstname} ${month} oyi uchun to'lovni amalga oshirdi`,
       userId,
     );
     res.redirect('/');
@@ -128,12 +130,23 @@ const postPayment = async (req, res, next) => {
 const getUserMessages = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const unreadMessages = await MessageRepo.findById(userId);
+    const myMessages = await MessageRepo.findAllWithoutMe(req.user.id);
+    await MessageRepo.makeMessagesRead(userId);
     res.render('user/messages', {
       pageTitle: 'Xabarlar',
-      unreadMessages,
-      userId,
+      myMessages,
     });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const postRepay = async (req, res, next) => {
+  try {
+    const { userId, messageId } = req.body;
+    await UserRepo.deleteCash(userId);
+    await MessageRepo.deleteById(messageId);
+    res.redirect('/userId');
   } catch (err) {
     console.log(err);
   }
@@ -146,4 +159,5 @@ module.exports = {
   postPayment,
   filteredUsers,
   getUserMessages,
+  postRepay,
 };

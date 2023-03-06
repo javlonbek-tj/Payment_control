@@ -2,30 +2,8 @@ const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
 const { formatData, getMonth } = require('../repos/utils/formatData');
 const { deleteFile } = require('../services/file');
-const AdminRepo = require('../repos/admin-repo');
 const { filteredUsers } = require('./user.controller');
 const excelJS = require('exceljs');
-const { filter } = require('compression');
-
-const getAdminSignUp = async (req, res, next) => {
-  try {
-    res.render('admin/signup', {
-      pageTitle: "Admin qo'shish",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const postAdminSignUp = async (req, res, next) => {
-  try {
-    const { firstname, lastname, passport, phoneNumber } = req.body;
-    await AdminRepo.insert(firstname, lastname, passport, phoneNumber);
-    res.redirect('/');
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 const getAddUser = (req, res, next) => {
   try {
@@ -40,12 +18,34 @@ const getAddUser = (req, res, next) => {
 
 const postAddUser = async (req, res, next) => {
   try {
-    const { firstname, lastname, course, mentor, date, passport, phoneNumber } = req.body;
+    const { firstname, lastname, course, mentor, date, passport, phoneNumber, isAdmin } = req.body;
     const isUserExists = await UserRepo.isUserExists(passport, phoneNumber);
     if (isUserExists) {
       return res.status(400).json('User already exists');
     }
-    await UserRepo.insert(firstname, lastname, course, mentor, date, passport, phoneNumber);
+    if (isAdmin === 'admin') {
+      await UserRepo.insert(
+        firstname,
+        lastname,
+        course,
+        mentor,
+        date,
+        passport,
+        phoneNumber,
+        'admin',
+      );
+    } else {
+      await UserRepo.insert(
+        firstname,
+        lastname,
+        course,
+        mentor,
+        date,
+        passport,
+        phoneNumber,
+        'user',
+      );
+    }
     res.redirect('/');
   } catch (err) {
     console.log(err);
@@ -113,10 +113,11 @@ const deleteUser = async (req, res, next) => {
 
 const getMessages = async (req, res, next) => {
   try {
-    const unreadMessages = await MessageRepo.find();
+    const myMessages = await MessageRepo.findAllWithoutMe(req.user.id);
+    await MessageRepo.makeMessagesRead(req.user.id);
     res.render('admin/messages', {
       pageTitle: 'Xabarlar',
-      unreadMessages,
+      myMessages,
     });
   } catch (err) {
     console.log(err);
@@ -126,10 +127,8 @@ const getMessages = async (req, res, next) => {
 const confirmPayment = async (req, res, next) => {
   try {
     const { userId, messageId } = req.body;
-    const user = await UserRepo.changePaymentStatusToPaid(userId);
-    const month = getMonth(user.date);
+    await UserRepo.changePaymentStatusToPaid(userId);
     await MessageRepo.deleteById(messageId);
-    await MessageRepo.insert(`Sizning ${month} oyi uchun to'lovingiz qabul qilindi`, userId);
     res.redirect('/');
   } catch (err) {
     console.log(err);
@@ -137,12 +136,13 @@ const confirmPayment = async (req, res, next) => {
 };
 const rejectPayment = async (req, res, next) => {
   try {
-    const { userId, rejectionReason } = req.body;
+    const { userId, rejectionReason, messageId } = req.body;
     const user = await UserRepo.changePaymentStatusToRejected(userId);
+    await MessageRepo.deleteById(messageId);
     const month = getMonth(user.date);
     await MessageRepo.insert(
       `Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}`,
-      userId,
+      req.user.id,
     );
     res.redirect('/');
   } catch (err) {
@@ -189,8 +189,6 @@ const getUsersExcel = async (req, res, next) => {
 };
 
 module.exports = {
-  getAdminSignUp,
-  postAdminSignUp,
   getAddUser,
   postAddUser,
   getUpdateUser,

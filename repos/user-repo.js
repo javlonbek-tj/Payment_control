@@ -3,21 +3,17 @@ const toCamelCase = require('./utils/to-camel-case');
 
 class UserRepo {
   static async find() {
-    const { rows } = await pool.query('SELECT * FROM users;');
+    const { rows } = await pool.query('SELECT * FROM users WHERE role = $1;', ['user']);
     return toCamelCase(rows);
   }
   static async findById(id) {
     const { rows } = await pool.query('SELECT * FROM users WHERE id = $1;', [id]);
     return toCamelCase(rows)[0];
   }
-  static async insert(firstname, lastname, course, mentor, date, passport, phoneNumber) {
+  static async insert(firstname, lastname, course, mentor, date, passport, phoneNumber, role) {
     const { rows } = await pool.query(
-      'INSERT INTO users(firstname, lastname, course, mentor, date, passport, phoneNumber) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *; ',
-      [firstname, lastname, course, mentor, date, passport, phoneNumber],
-    );
-    await pool.query(
-      'INSERT INTO admins(firstname, lastname, passport, phoneNumber, role) VALUES ($1, $2, $3, $4, $5);',
-      [firstname, lastname, passport, phoneNumber, 'user'],
+      'INSERT INTO users(firstname, lastname, course, mentor, date, passport, phoneNumber, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *; ',
+      [firstname, lastname, course, mentor, date, passport, phoneNumber, role],
     );
     return toCamelCase(rows)[0];
   }
@@ -64,6 +60,9 @@ class UserRepo {
 
   static async uploadCash(pdf, userId) {
     await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2;`, [pdf, userId]);
+  }
+  static async deleteCash(userId) {
+    await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2;`, [null, userId]);
   }
   static async findPartial(query) {
     const { rows } = await pool.query(`SELECT * FROM users WHERE firstname ILIKE '%${query}%';`);
