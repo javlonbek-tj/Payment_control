@@ -64,7 +64,7 @@ nav .fas {
 .nav-item {
   position: relative;
   top: 12px;
-  margin-left: 6px;
+  margin-left: 1px;
 }
 a:hover {
   background: #eee;

@@ -2,7 +2,7 @@ const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
 const { formatData, getMonth } = require('../repos/utils/formatData');
 const findByCategories = require('../repos/utils/filtering');
-const { deleteFile } = require('../services/file');
+const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 
 let filteredUsers = [];
 const getAllUsers = async (req, res, next) => {
@@ -80,12 +80,14 @@ const getOneUser = async (req, res, next) => {
     if (!user) {
       return res.status(400).json('No user Found');
     }
+    const rejectedCash = await RejectedCashesRepo.findById(userId);
     formatData(user);
     const month = getMonth(user.date);
     res.render('user/user-detail', {
       pageTitle: "Mening ma'lumotlarim",
       user,
       month,
+      rejectedCash,
     });
   } catch (err) {
     console.log(err);
@@ -141,12 +143,13 @@ const getUserMessages = async (req, res, next) => {
   }
 };
 
-const postRepay = async (req, res, next) => {
+const deleteMessage = async (req, res, next) => {
   try {
     const { userId, messageId } = req.body;
+    const user = await UserRepo.findById(userId);
     await UserRepo.deleteCash(userId);
     await MessageRepo.deleteById(messageId);
-    res.redirect('/userId');
+    res.redirect('/');
   } catch (err) {
     console.log(err);
   }
@@ -159,5 +162,5 @@ module.exports = {
   postPayment,
   filteredUsers,
   getUserMessages,
-  postRepay,
+  deleteMessage,
 };

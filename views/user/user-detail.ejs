@@ -80,8 +80,10 @@
                       </div>
                       <% } %> <% if(user.paymentstatus === "Rad etilgan") {%>
                       <div class="mb-5 d-flex justify-content-between">
-                        <h4>To'lov cheki:</h4>
-                        <a href="/<%= user.paymentcashurl%>" class="fs-4">PDF</a>
+                        <h4>Rad etilgan to'lov cheki:</h4>
+                        <% for(let cash of rejectedCash) {%>
+                        <a href="/<%= cash.paymentcashurl%>" class="fs-4">pdf</a>
+                        <% } %>
                       </div>
                       <% } %>
                     </div>

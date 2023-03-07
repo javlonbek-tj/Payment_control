@@ -4,6 +4,7 @@ const { formatData, getMonth } = require('../repos/utils/formatData');
 const { deleteFile } = require('../services/file');
 const { filteredUsers } = require('./user.controller');
 const excelJS = require('exceljs');
+const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 
 const getAddUser = (req, res, next) => {
   try {
@@ -138,6 +139,7 @@ const rejectPayment = async (req, res, next) => {
   try {
     const { userId, rejectionReason, messageId } = req.body;
     const user = await UserRepo.changePaymentStatusToRejected(userId);
+    await RejectedCashesRepo.insert(user.paymentcashurl, userId);
     await MessageRepo.deleteById(messageId);
     const month = getMonth(user.date);
     await MessageRepo.insert(
@@ -188,6 +190,18 @@ const getUsersExcel = async (req, res, next) => {
   }
 };
 
+const getRejectedCashes = async (req, res, next) => {
+  try {
+    const rejectedCashes = await RejectedCashesRepo.find();
+    res.render('admin/rejectedCashes', {
+      pageTitle: 'Rad etilgan cheklar',
+      rejectedCashes,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   getAddUser,
   postAddUser,
@@ -198,4 +212,5 @@ module.exports = {
   confirmPayment,
   rejectPayment,
   getUsersExcel,
+  getRejectedCashes,
 };

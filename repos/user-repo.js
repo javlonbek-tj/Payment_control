@@ -62,10 +62,16 @@ class UserRepo {
     await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2;`, [pdf, userId]);
   }
   static async deleteCash(userId) {
-    await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2;`, [null, userId]);
+    await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2 RETURNING *;`, [
+      null,
+      userId,
+    ]);
   }
   static async findPartial(query) {
-    const { rows } = await pool.query(`SELECT * FROM users WHERE firstname ILIKE '%${query}%';`);
+    const { rows } = await pool.query(
+      `SELECT * FROM users WHERE firstname ILIKE '%${query}%' AND role = $1;`,
+      ['user'],
+    );
     return toCamelCase(rows);
   }
   static async findByCategories(course, mentor, paymentstatus, dateFrom, dateTo) {
