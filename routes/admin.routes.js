@@ -18,8 +18,8 @@ const {
 } = require('../controllers/admin.controller');
 
 router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
-router.get('/addUser', getAddUser);
-router.post('/addUser', postAddUser);
+router.get('/addUser', isAuth, restrictTo('admin'), getAddUser);
+router.post('/addUser', isAuth, restrictTo('admin'), postAddUser);
 router.get('/:userId/changeUserInfo', isAuth, restrictTo('admin'), getUpdateUser);
 router.post('/changeUserInfo', isAuth, restrictTo('admin'), postUpdateUser);
 router.delete('/deleteUser/:userId', isAuth, restrictTo('admin'), deleteUser);

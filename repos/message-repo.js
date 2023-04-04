@@ -18,7 +18,7 @@ class MessageRepo {
   }
   static async insert(text, userId) {
     const { rows } = await pool.query(
-      'INSERT INTO messages(message, userId) VALUES ($1, $2) RETURNING *; ',
+      'INSERT INTO messages(message, userId) VALUES ($1, $2) RETURNING *;',
       [text, userId],
     );
     return toCamelCase(rows)[0];

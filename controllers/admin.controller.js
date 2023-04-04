@@ -4,6 +4,7 @@ const { getMonth } = require('../repos/utils/formatData');
 const { filteredUsers } = require('./user.controller');
 const excelJS = require('exceljs');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
+const moment = require('moment');
 
 const getAddUser = (req, res, next) => {
   try {
@@ -142,7 +143,7 @@ const rejectPayment = async (req, res, next) => {
     await MessageRepo.deleteById(messageId);
     const month = getMonth(user.date);
     await MessageRepo.insert(
-      `Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}`,
+      `Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}.`,
       req.user.id,
     );
     res.redirect('/');
