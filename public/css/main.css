@@ -18,16 +18,12 @@ nav {
   bottom: 0;
   height: 100vh;
   left: 0;
-  width: 90px;
-  /* width: 280px; */
+  width: 280px;
   background: #fff;
   overflow: hidden;
   transition: 1s;
 }
-nav:hover {
-  width: 280px;
-  transition: 1s;
-}
+
 .admin {
   text-align: center;
   display: flex;
@@ -109,7 +105,7 @@ a:hover i {
   display: flex;
   width: 100%;
   margin: auto;
-  max-width: 900px;
+  max-width: 1000px;
 }
 .users .card {
   width: 25%;
@@ -117,28 +113,23 @@ a:hover i {
   background: #fff;
   text-align: center;
   border-radius: 10px;
-  padding: 10px;
+  padding: 15px 15px;
   box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
 }
 .users .card h4 {
   text-transform: uppercase;
   padding: 5px 0;
 }
-.users .card p {
-  font-size: 12px;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-}
 .users table {
   margin: auto;
 }
 .users .per span {
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: 5px;
   background: rgb(223, 223, 223);
 }
 .users td {
-  font-size: 12px;
+  font-size: 13px;
   padding-right: 15px;
 }
 .users .card a {
@@ -282,11 +273,17 @@ table thead tr {
   background-color: #ddd;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1100px) {
   .nav-item {
     display: none;
   }
-  nav:hover {
+  nav {
     width: 90px;
+  }
+  .users .card {
+    padding: 10px 10px;
+  }
+  .table {
+    font-size: 12px;
   }
 }

@@ -1,7 +1,6 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { formatData, getMonth } = require('../repos/utils/formatData');
-const { deleteFile } = require('../services/file');
+const { getMonth } = require('../repos/utils/formatData');
 const { filteredUsers } = require('./user.controller');
 const excelJS = require('exceljs');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
