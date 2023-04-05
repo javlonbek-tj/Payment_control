@@ -286,4 +286,8 @@ table thead tr {
   .table {
     font-size: 12px;
   }
+  .table a {
+    padding: 3px 10px;
+    font-size: 12px;
+  }
 }

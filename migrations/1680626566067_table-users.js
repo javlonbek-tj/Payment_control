@@ -13,9 +13,9 @@ exports.up = pgm => {
         UNIQUE(firstname, lastname),
         course VARCHAR(20) NOT NULL,
         mentor VARCHAR(40) NOT NULL,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        passport VARCHAR(9) NOT NULL,
-        phoneNumber VARCHAR(9) NOT NULL,
+        date TIMESTAMP NOT NULL,
+        login VARCHAR(20) NOT NULL,
+        password VARCHAR(300) NOT NULL,
         paymentStatus VARCHAR(15) DEFAULT 'not paid',
         paymentCashUrl VARCHAR(150),
         role VARCHAR(15) NOT NULL DEFAULT 'user'

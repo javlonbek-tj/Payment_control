@@ -11,7 +11,10 @@
   <body>
 <section class="signup container">
     <div class="mb-5 fs-4"><i class="fa-solid fa-backward text-warning me-2"></i> <a href="/<%= (update) ? user.id : '' %>">Orqaga</a></div> 
-  <div class="signup-content text-center">
+    <% if(errorMessage) { %>
+      <h3 class="text-center text-danger mb-5"><%= errorMessage %></h3>
+      <% } %>
+    <div class="signup-content text-center">
     <div class="signup-form">
       <h2 class="text-success"><%= (update) ? "Ma'lumotlarni o'zgartirish" : "Ro'yxatdan o'tish" %></h1>
         <form method="POST" class="register-form fs-4 mt-5" id="register-form" action="/admin/<%= (update) ? 'changeUserInfo' : 'addUser' %>" novalidate>
@@ -22,7 +25,7 @@
             name="firstname"
             id="firstname"
             placeholder="Ism Familiya"
-            value="<%= (update) ? user.firstname : '' %>"
+            value="<%= (update || error) ? student.firstname : '' %>"
           />
         </div>
         <div class="form-group mb-5">
@@ -32,27 +35,27 @@
             name="lastname"
             id="lastname"
             placeholder="Sharif"
-            value="<%= (update) ? user.lastname : '' %>"
+            value="<%= (update || error) ? student.lastname : '' %>"
           />
         </div>
         <div class="form-group mb-5">
             <label for="course"><i class="fa-solid fa-book me-4 fs-5"></i></label>
           <select name="course">
-            <option <%= (update) ? '' : 'selected' %> disabled>Kursni tanlang</option>
-            <option value="Matematika" <%= (update && user.course === 'Matematika') ? 'selected' : '' %>>Matematika</option>
-            <option value="Ingliz tili" <%= (update && user.course === 'Ingliz tili') ? 'selected' : '' %>>Ingliz tili</option>
-            <option value="Fizika" <%= (update && user.course === 'Fizika') ? 'selected' : '' %>>Fizika</option>
-            <option value="Kimyo" <%= (update && user.course === 'Kimyo') ? 'selected' : '' %>>Kimyo</option>
+            <option <%= (update || error && student.course) ? '' : 'selected' %> disabled>Kursni tanlang</option>
+            <option value="Matematika" <%= (student.course === 'Matematika') ? 'selected' : '' %>>Matematika</option>
+            <option value="Ingliz tili" <%= (student.course === 'Ingliz tili') ? 'selected' : '' %>>Ingliz tili</option>
+            <option value="Fizika" <%= (student.course === 'Fizika') ? 'selected' : '' %>>Fizika</option>
+            <option value="Kimyo" <%= (student.course === 'Kimyo') ? 'selected' : '' %>>Kimyo</option>
           </select>
         </div>
         <div class="form-group mb-5">
             <label for="mentor"><i class="fa-solid fa-person-chalkboard me-4 fs-5"></i></label>
           <select name="mentor">
-            <option <%= (update) ? '' : 'selected' %> disabled>O'qituvchini tanlang</option>
-            <option value="Raximov Alisher" <%= (update && user.mentor === 'Raximov Alisher') ? 'selected' : '' %>>Raximov Alisher</option>
-            <option value="Qodirov Nodir" <%= (update && user.mentor === 'Qodirov Nodir') ? 'selected' : '' %>>Qodirov Nodir</option>
-            <option value="Fozilov Kozim" <%= (update && user.mentor === 'Fozilov Kozim') ? 'selected' : '' %>>Fozilov Kozim</option>
-            <option value="Sattorov Tolib" <%= (update && user.mentor === 'Sattorov Tolib') ? 'selected' : '' %>>Sattorov Tolib</option>
+            <option <%= (update || error && student.mentor) ? '' : 'selected' %> disabled>O'qituvchini tanlang</option>
+            <option value="Raximov Alisher" <%= (student.mentor === 'Raximov Alisher') ? 'selected' : '' %>>Raximov Alisher</option>
+            <option value="Qodirov Nodir" <%= (student.mentor === 'Qodirov Nodir') ? 'selected' : '' %>>Qodirov Nodir</option>
+            <option value="Fozilov Kozim" <%= (student.mentor === 'Fozilov Kozim') ? 'selected' : '' %>>Fozilov Kozim</option>
+            <option value="Sattorov Tolib" <%= (student.mentor === 'Sattorov Tolib') ? 'selected' : '' %>>Sattorov Tolib</option>
           </select>
         </div>
         <% if(!update) {%>
@@ -62,38 +65,36 @@
               </div>
               <% } %>
         <div class="form-group mb-5">
-            <label for="passport"><i class="fa-solid fa-passport me-4 fs-5 text-success"></i></label>
+            <label for="login"><i class="fa-solid fa-lock me-4 fs-5 text-success"></i></label>
           <input
-            type="text"
-            name="passport"
-            id="passport"
-            placeholder="Pasport seriya va raqam"
-            value="<%= (update) ? user.passport : '' %>"
-            <%= (update) ? "disabled" : "" %>
+            type="password"
+            name="login"
+            id="login"
+            placeholder="Login"
+            value="<%= (update || error) ? student.login : '' %>"
           />
         </div>
         <div class="form-group mb-5">
-            <label for="phoneNumber"><i class="fa-solid fa-phone me-4 fs-5"></i></label>
+            <label for="parol"><i class="fa-solid fa-lock me-4 fs-5"></i></label>
             <input
-              type="text"
-              name="phoneNumber"
-              id="phoneNumber"
-              placeholder="Telefon raqami"
-              value="<%= (update) ? user.phonenumber : '' %>"
-              <%= (update) ? "disabled" : "" %>
+              type="password"
+              name="parol"
+              id="parol"
+              placeholder="Parol"
+              value="<%= (update || error) ? student.parol : '' %>"
             />
           </div>
           <div class="form-check mb-5 d-flex align-items-center ms-4">
-            <input class="me-4" type="checkbox" value="admin" name="isAdmin" id="flexCheckDefault">
+            <input class="me-4" type="checkbox" value="admin" name="isAdmin" id="flexCheckDefault" <%= (user?.isAdmin) ? 'checked' : ''%>>
             <label class="form-check-label" for="flexCheckDefault">
              Admin
              </label>
           </div>
         <div class="form-button mt-5">
             <% if(update) { %>
-                <input type="hidden" name="userId" value="<%= user.id%>">
+                <input type="hidden" name="userId" value="<%= student.id%>">
             <% } %>    
-          <input type="submit" name="signup" id="signup" class="form-submit py-3 px-5" value="Ro'yxatdan o'tish" />
+          <input type="submit" name="signup" id="signup" class="form-submit py-3 px-5" value="<%= (update) ? 'O`zgartirish': 'Ro`yxatdan o`tish'%>" />
         </div>
       </form>
     </div>

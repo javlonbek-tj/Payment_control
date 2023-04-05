@@ -231,7 +231,7 @@
                   <td><i class="fas fa-circle circle_blue"></i><%= singleUser.paymentstatus %></td>
                   <% } %>
                   <td>
-                    <% if(singleUser.passport == user.passport || user.role === 'admin') {%>
+                    <% if(singleUser.login == user.login || user.role === 'admin') {%>
                     <a href="/<%= singleUser.id%>">Ko'rish</a>
                     <% } else { %>
                     <a>Ko'rish</a>

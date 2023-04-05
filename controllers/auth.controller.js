@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const UserRepo = require('../repos/user-repo');
 const { promisify } = require('util');
+const bcrypt = require('bcryptjs');
 
 const createSendToken = (user, req, res) => {
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -25,9 +26,13 @@ const getLogin = async (req, res, next) => {
 
 const postLogin = async (req, res, next) => {
   try {
-    const { passport, phoneNumber } = req.body;
-    const user = await UserRepo.isUserExists(passport, phoneNumber);
+    const { login, password } = req.body;
+    const user = await UserRepo.isUserExists(login);
     if (!user) {
+      return res.redirect('/login');
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.redirect('/login');
     }
     createSendToken(user, req, res);

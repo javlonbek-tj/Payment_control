@@ -1,16 +1,29 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { getMonth } = require('../repos/utils/formatData');
+const { getMonth, formatData } = require('../repos/utils/formatData');
 const { filteredUsers } = require('./user.controller');
 const excelJS = require('exceljs');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
-const moment = require('moment');
+const { validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 
 const getAddUser = (req, res, next) => {
   try {
     res.render('admin/addUser', {
       pageTitle: "Ro'yxatga olish",
       update: null,
+      error: null,
+      errorMessage: null,
+      student: {
+        firstname: '',
+        lastname: '',
+        course: '',
+        mentor: '',
+        date: '',
+        login: '',
+        password: '',
+        isAdmin: '',
+      },
     });
   } catch (err) {
     console.log(err);
@@ -19,11 +32,50 @@ const getAddUser = (req, res, next) => {
 
 const postAddUser = async (req, res, next) => {
   try {
-    const { firstname, lastname, course, mentor, date, passport, phoneNumber, isAdmin } = req.body;
-    const isUserExists = await UserRepo.isUserExists(passport, phoneNumber);
-    if (isUserExists) {
-      return res.status(400).json('User already exists');
+    const errors = validationResult(req);
+    const { firstname, lastname, course, mentor, login, password, isAdmin } = req.body;
+    let { date } = req.body;
+    if (!errors.isEmpty()) {
+      return res.status(422).render('admin/addUser', {
+        pageTitle: "Ro'yxatga olish",
+        update: null,
+        error: true,
+        errorMessage: errors.array()[0].msg,
+        student: {
+          firstname,
+          lastname,
+          course,
+          mentor,
+          date,
+          login,
+          password,
+          isAdmin,
+        },
+      });
     }
+    if (date == '') {
+      date = new Date(Date.now());
+    }
+    const isUserExists = await UserRepo.isUserExists(login);
+    if (isUserExists) {
+      return res.status(400).render('admin/addUser', {
+        pageTitle: "Ro'yxatga olish",
+        update: null,
+        error: true,
+        errorMessage: 'Ushbu login password boshqa foydalanuvchiga tegishli',
+        student: {
+          firstname,
+          lastname,
+          course,
+          mentor,
+          date,
+          login,
+          password,
+          isAdmin,
+        },
+      });
+    }
+    const hashedpassword = await bcrypt.hash(password, 12);
     if (isAdmin === 'admin') {
       await UserRepo.insert(
         firstname,
@@ -31,8 +83,8 @@ const postAddUser = async (req, res, next) => {
         course,
         mentor,
         date,
-        passport,
-        phoneNumber,
+        login,
+        hashedpassword,
         'admin',
       );
     } else {
@@ -42,8 +94,8 @@ const postAddUser = async (req, res, next) => {
         course,
         mentor,
         date,
-        passport,
-        phoneNumber,
+        login,
+        hashedpassword,
         'user',
       );
     }
@@ -62,8 +114,10 @@ const getUpdateUser = async (req, res, next) => {
     }
     res.render('admin/addUser', {
       pageTitle: "Ma'lumotlarni o'zgartirish",
-      user,
+      student: user,
       update: true,
+      error: null,
+      errorMessage: '',
     });
   } catch (err) {
     console.log(err);
@@ -72,25 +126,42 @@ const getUpdateUser = async (req, res, next) => {
 
 const postUpdateUser = async (req, res, next) => {
   try {
-    const { userId, firstname, lastname, course, mentor, passport, phoneNumber } = req.body;
+    const errors = validationResult(req);
+    const { userId, firstname, lastname, course, mentor, login, password } = req.body;
     const oldUser = await UserRepo.findById(userId);
     if (!oldUser) {
-      return res.status(400).json('User not found');
+      return res.status(400).json('Ushbu foydalanuvchi topilmadi');
+    }
+    if (!errors.isEmpty()) {
+      return res.status(422).render('admin/addUser', {
+        pageTitle: "Ro'yxatga olish",
+        update: true,
+        error: true,
+        errorMessage: errors.array()[0].msg,
+        student: {
+          firstname,
+          lastname,
+          course,
+          mentor,
+          login,
+          password,
+        },
+      });
     }
     const oldFirstname = oldUser.firstname;
     const oldLastname = oldUser.lastname;
     const oldCourse = oldUser.course;
     const oldMentor = oldUser.mentor;
-    const oldPassport = oldUser.passport;
-    const oldPhoneNumber = oldUser.phoneNumber;
+    const oldlogin = oldUser.login;
+    const oldpassword = oldUser.password;
     await UserRepo.update(
       userId,
       firstname ? firstname : oldFirstname,
       lastname ? lastname : oldLastname,
       course ? course : oldCourse,
       mentor ? mentor : oldMentor,
-      passport ? passport : oldPassport,
-      phoneNumber ? phoneNumber : oldPhoneNumber,
+      login ? login : oldlogin,
+      password ? password : oldpassword,
     );
     res.redirect(`/${userId}`);
   } catch (err) {
@@ -100,13 +171,13 @@ const postUpdateUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.body;
     const oldUser = await UserRepo.findById(userId);
     if (!oldUser) {
       return res.status(400).json('User not found');
     }
     await UserRepo.deleteById(userId);
-    res.status(200).json('User deleted successfully');
+    res.redirect('/');
   } catch (err) {
     console.log(err);
   }
@@ -163,7 +234,7 @@ const getUsersExcel = async (req, res, next) => {
       { header: 'Sharif', key: 'lastname', width: 10 },
       { header: 'Kurs', key: 'course', width: 10 },
       { header: 'Mentor', key: 'mentor', width: 10 },
-      { header: 'Telefon raqami', key: 'phonenumber', width: 10 },
+      { header: 'Telefon raqami', key: 'password', width: 10 },
       { header: "To'lov holati", key: 'paymentstatus', width: 10 },
     ];
     let counter = 1;
@@ -193,6 +264,9 @@ const getUsersExcel = async (req, res, next) => {
 const getRejectedCashes = async (req, res, next) => {
   try {
     const rejectedCashes = await RejectedCashesRepo.find();
+    if (rejectedCashes.length > 0) {
+      formatData(rejectedCashes);
+    }
     res.render('admin/rejectedCashes', {
       pageTitle: 'Rad etilgan cheklar',
       rejectedCashes,

@@ -32,16 +32,21 @@
                   style="border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem"
                 >
                   <img
-                    src="<% if(user.photo) { %>  /<%= user.photo %> <% } else { %> /image/commentUser.png <% } %>"
+                    src="<% if(student.photo) { %>  /<%= student.photo %> <% } else { %> /image/commentUser.png <% } %>"
                     alt="Avatar"
                     class="img-fluid mt-5 mb-2 rounded-circle"
                     style="width: 80px; height: 80px"
                   />
-                  <h4 class="mb-3"><%= user.firstname %></h4>
+                  <h4 class="mb-3"><%= student.firstname %></h4>
                   <% if(user.role === 'admin') {%>
-                  <a href="/admin/<%=user.id%>/changeUserInfo" class="text-white">
+                  <hr />
+                  <a href="/admin/<%=student.id%>/changeUserInfo" class="text-white">
                     <i class="far fa-edit mt-2 fs-3 mb-5"></i>
                   </a>
+                  <form action="/admin/deleteUser" method="POST">
+                    <input type="hidden" name="userId" value="<%= student.id %>" />
+                    <button type="submit" class="btn btn-danger fs-5">O'chirish</button>
+                  </form>
                   <% } %>
                 </div>
                 <div class="col-md-8">
@@ -51,34 +56,42 @@
                     <div class="pt-1">
                       <div class="mb-2 d-flex justify-content-between">
                         <h4>FIO:</h4>
-                        <p class="text-muted fs-4"><%= user.firstname%> <%= user.lastname%></p>
+                        <p class="text-muted fs-4">
+                          <%= student.firstname%> <%= student.lastname%>
+                        </p>
                       </div>
                       <div class="mb-2 d-flex justify-content-between">
                         <h4>Kurs nomi:</h4>
-                        <p class="text-muted fs-4"><%= user.course%></p>
+                        <p class="text-muted fs-4"><%= student.course%></p>
                       </div>
                       <div class="mb-2 d-flex justify-content-between">
                         <h4>Mentor:</h4>
-                        <p class="text-muted fs-4"><%= user.mentor%></p>
+                        <p class="text-muted fs-4"><%= student.mentor%></p>
                       </div>
                       <div class="mb-2 d-flex justify-content-between">
                         <h4>Kurs boshlagan sana:</h4>
-                        <p class="text-muted fs-4"><%= user.createdAt %></p>
+                        <p class="text-muted fs-4"><%= student.createdAt %></p>
                       </div>
+                      <% if(user.role === 'admin') {%>
+                      <div class="mb-2 d-flex justify-content-between">
+                        <h4>Login:</h4>
+                        <p class="text-muted fs-4"><%= student.login %></p>
+                      </div>
+                      <% } %>
                       <div class="mb-2 d-flex justify-content-between">
                         <h4>Telefon raqami:</h4>
-                        <p class="text-muted fs-4"><%= user.phonenumber %></p>
+                        <p class="text-muted fs-4"><%= student.parol %></p>
                       </div>
                       <div class="mb-2 d-flex justify-content-between">
                         <h4><%= month %> oyi to'lovi:</h4>
-                        <p class="text-muted fs-4"><%= user.paymentstatus%></p>
+                        <p class="text-muted fs-4"><%= student.paymentstatus%></p>
                       </div>
-                      <% if(user.paymentstatus === "To'landi") {%>
+                      <% if(student.paymentstatus === "To'landi") {%>
                       <div class="mb-5 d-flex justify-content-between">
                         <h4>To'lov cheki:</h4>
-                        <a href="/<%= user.paymentcashurl%>" class="fs-4">PDF</a>
+                        <a href="/<%= student.paymentcashurl%>" class="fs-4">PDF</a>
                       </div>
-                      <% } %> <% if(user.paymentstatus === "Rad etilgan") {%>
+                      <% } %> <% if(student.paymentstatus === "Rad etilgan") {%>
                       <div class="mb-5 d-flex justify-content-between">
                         <h4>Rad etilgan to'lov cheki:</h4>
                         <% for(let cash of rejectedCash) {%>
@@ -88,12 +101,12 @@
                       <% } %>
                     </div>
                     <div class="d-flex justify-content-between fs-4">
-                      <% if(user.paymentstatus === "Rad etilgan") {%>
-                      <a href="/<%= user.id%>/payment">To'lov qilish</a>
-                      <% }%> <% if(user.paymentstatus === "To'lanmadi") {%>
-                      <a href="/<%= user.id%>/payment">To'lov qilish</a>
+                      <% if(student.paymentstatus === "Rad etilgan") {%>
+                      <a href="/<%= student.id%>/payment">To'lov qilish</a>
+                      <% }%> <% if(student.paymentstatus === "To'lanmadi") {%>
+                      <a href="/<%= student.id%>/payment">To'lov qilish</a>
                       <% }%>
-                      <a href="/messages/<%=user.id%>">Xabarlarim</a>
+                      <a href="/messages/<%=student.id%>">Xabarlarim</a>
                       <a href="/logout">Chiqish</a>
                     </div>
                     <hr class="mt-0 mb-4" />

@@ -1,5 +1,3 @@
-const moment = require('moment');
-
 const month = [
   'Yanvar',
   'Fevral',
@@ -39,11 +37,11 @@ const checkPaymentStatus = item => {
 const formatData = items => {
   if (items.length > 0) {
     items.map(item => {
-      item.createdAt = moment().format('D.MM.YYYY');
+      item.createdAt = item.createdAt.toLocaleDateString();
       checkPaymentStatus(item);
     });
   } else {
-    items.createdAt = moment().format('D.MM.YYYY');
+    items.createdAt = items.createdAt.toLocaleDateString();
     checkPaymentStatus(items);
   }
   return items;

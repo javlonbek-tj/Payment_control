@@ -10,7 +10,7 @@
   </head>
   <body>
 <section class="signup container">
-    <div class="mb-5 fs-4"><i class="fa-solid fa-backward text-warning me-2"></i> <a href="/<%= user.id%>">Orqaga</a></div> 
+    <div class="mb-5 fs-4"><i class="fa-solid fa-backward text-warning me-2"></i> <a href="/<%= student.id%>">Orqaga</a></div> 
   <div class="signup-content text-center">
     <div class="signup-form">
       <h2 class="text-success">To'lovni chekini yuklash</h1>
@@ -19,28 +19,28 @@
             <label for="firstname"><i class="fa-solid fa-user me-4 fs-5"></i></label>
           <input
             type="text"
-            value="<%= user.firstname %>" disabled
+            value="<%= student.firstname %>" disabled
           />
         </div>
         <div class="form-group mb-5">
             <label for="lastname"><i class="fa-solid fa-user me-4 fs-5 text-primary"></i></label>
           <input
             type="text"
-            value="<%= user.lastname %>" disabled
+            value="<%= student.lastname %>" disabled
           />
         </div>
         <div class="form-group mb-5">
             <label for="course"><i class="fa-solid fa-book me-4 fs-5"></i></label>
           <input
             type="text"
-            value="<%= user.course %>" disabled
+            value="<%= student.course %>" disabled
           />
         </div>
         <div class="form-group mb-5">
             <label for="mentor"><i class="fa-solid fa-person-chalkboard me-4 fs-5"></i></label>
           <input
             type="text"
-            value="<%= user.mentor %>" disabled
+            value="<%= student.mentor %>" disabled
           />
         </div>
         <div class="form-group mb-5">
@@ -62,7 +62,7 @@
                 <h4 class="text-muted ms-4 d-flex" id="cash_info">To'lov chekini yuklang</h4>
         </div>
         <div class="form-button mt-5">
-          <input type="hidden" name="userId" value="<%= user.id%>"> 
+          <input type="hidden" name="userId" value="<%= student.id%>"> 
           <button type="submit" class="form-submit py-3 px-5">To'lovni yakunlash</button>
         </div>
       </form> 

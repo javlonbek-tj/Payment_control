@@ -38,7 +38,7 @@ const getAllUsers = async (req, res, next) => {
     } else {
       users = await UserRepo.find();
     }
-    if (users) {
+    if (users.length > 0) {
       users.map(user => (user.date = getMonth(user.date)));
       formatData(users);
       filteredUsers.pop();
@@ -85,7 +85,7 @@ const getOneUser = async (req, res, next) => {
     const month = getMonth(user.date);
     res.render('user/user-detail', {
       pageTitle: "Mening ma'lumotlarim",
-      user,
+      student: user,
       month,
       rejectedCash,
     });
@@ -104,7 +104,7 @@ const getPayment = async (req, res, next) => {
     const month = getMonth(user.date);
     res.render('user/payment', {
       pageTitle: "Ma'lumotlarni o'zgartirish",
-      user,
+      student: user,
       month,
     });
   } catch (err) {
@@ -146,7 +146,6 @@ const getUserMessages = async (req, res, next) => {
 const deleteMessage = async (req, res, next) => {
   try {
     const { userId, messageId } = req.body;
-    const user = await UserRepo.findById(userId);
     await UserRepo.deleteCash(userId);
     await MessageRepo.deleteById(messageId);
     res.redirect('/');

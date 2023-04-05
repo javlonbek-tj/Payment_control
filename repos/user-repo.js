@@ -10,17 +10,17 @@ class UserRepo {
     const { rows } = await pool.query('SELECT * FROM users WHERE id = $1;', [id]);
     return toCamelCase(rows)[0];
   }
-  static async insert(firstname, lastname, course, mentor, date, passport, phoneNumber, role) {
+  static async insert(firstname, lastname, course, mentor, date, login, password, role) {
     const { rows } = await pool.query(
-      'INSERT INTO users(firstname, lastname, course, mentor, date, passport, phoneNumber, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *; ',
-      [firstname, lastname, course, mentor, date, passport, phoneNumber, role],
+      'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *; ',
+      [firstname, lastname, course, mentor, date, login, password, role],
     );
     return toCamelCase(rows)[0];
   }
-  static async update(id, firstname, lastname, course, mentor, passport, phoneNumber) {
+  static async update(id, firstname, lastname, course, mentor, login, password) {
     const { rows } = await pool.query(
-      'UPDATE users SET firstname = $1, lastname = $2, course = $3, mentor = $4, passport = $5, phoneNumber = $6 WHERE id = $7 RETURNING *;',
-      [firstname, lastname, course, mentor, passport, phoneNumber, id],
+      'UPDATE users SET firstname = $1, lastname = $2, course = $3, mentor = $4, login = $5, password = $6 WHERE id = $7 RETURNING *;',
+      [firstname, lastname, course, mentor, login, password, id],
     );
     return toCamelCase(rows);
   }
@@ -28,11 +28,8 @@ class UserRepo {
     await pool.query('DELETE FROM users WHERE id = $1;', [id]);
   }
 
-  static async isUserExists(passport, phoneNumber) {
-    const { rows } = await pool.query(
-      'SELECT * FROM users WHERE passport = $1 AND phoneNumber = $2;',
-      [passport, phoneNumber],
-    );
+  static async isUserExists(login) {
+    const { rows } = await pool.query('SELECT * FROM users WHERE login = $1', [login]);
     return toCamelCase(rows)[0];
   }
 
