@@ -1,1 +1,1 @@
-# Payment control of learners of study centers
+# Payment control of students of study centers
