@@ -75,17 +75,17 @@
           />
         </div>
         <div class="form-group mb-5">
-            <label for="parol"><i class="fa-solid fa-lock me-4 fs-5"></i></label>
+            <label for="password"><i class="fa-solid fa-lock me-4 fs-5"></i></label>
             <input
               type="password"
-              name="parol"
-              id="parol"
+              name="password"
+              id="password"
               placeholder="Parol"
-              value="<%= (update || error) ? student.parol : '' %>"
+              value="<%= (error) ? student.password : '' %>"
             />
           </div>
           <div class="form-check mb-5 d-flex align-items-center ms-4">
-            <input class="me-4" type="checkbox" value="admin" name="isAdmin" id="flexCheckDefault" <%= (user?.isAdmin) ? 'checked' : ''%>>
+            <input class="me-4" type="checkbox" value="admin" name="isAdmin" id="flexCheckDefault" <%= (student.isAdmin) ? 'checked' : ''%>>
             <label class="form-check-label" for="flexCheckDefault">
              Admin
              </label>

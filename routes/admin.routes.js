@@ -19,7 +19,7 @@ const {
 } = require('../controllers/admin.controller');
 
 router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
-router.get('/addUser', getAddUser);
+router.get('/addUser', isAuth, restrictTo('admin'), getAddUser);
 router.post(
   '/addUser',
   [
@@ -34,14 +34,16 @@ router.post(
       .withMessage('Login kiritilmadi')
       .isLength({ max: 20 })
       .withMessage('Login 20 ta belgidan ko`p bo`lmasligi kerak'),
-    check('parol')
+    check('password')
       .trim()
       .not()
       .isEmpty()
       .withMessage('Parol kiritilmadi')
       .isLength(9)
-      .withMessage('Login 9 ta belgidan ko`p bo`lmasligi kerak'),
+      .withMessage("Parol 9 ta belgidan iborat bo'lishi kerak"),
   ],
+  isAuth,
+  restrictTo('admin'),
   postAddUser,
 );
 router.get('/:userId/changeUserInfo', isAuth, restrictTo('admin'), getUpdateUser);

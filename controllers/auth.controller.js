@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const UserRepo = require('../repos/user-repo');
 const { promisify } = require('util');
 const bcrypt = require('bcryptjs');
+const AppError = require('../services/AppError');
 
 const createSendToken = (user, req, res) => {
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -20,7 +21,7 @@ const getLogin = async (req, res, next) => {
       pageTitle: 'Kirish',
     });
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -38,29 +39,28 @@ const postLogin = async (req, res, next) => {
     createSendToken(user, req, res);
     res.redirect('/');
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
 const isAuth = async (req, res, next) => {
-  try {
-    if (!req.cookies.jwt) {
+  if (req.cookies && req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+
+      // 2) Check if user still exists
+      const currentUser = await UserRepo.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      // THERE IS A LOGGED IN USER
+      req.user = currentUser;
+      return next();
+    } catch (err) {
       return next();
     }
-    // 1) verify token
-    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
-
-    // 2) Check if user still exists
-    const currentUser = await UserRepo.findById(decoded.id);
-    if (!currentUser) {
-      return next();
-    }
-
-    // THERE IS A LOGGED IN USER
-    req.user = currentUser;
-    return next();
-  } catch (err) {
-    console.log(err);
   }
   next();
 };
@@ -79,7 +79,7 @@ const logout = (req, res, next) => {
     res.clearCookie('jwt');
     res.redirect('/login');
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 

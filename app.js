@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const upload = require('./services/fileUpload');
 const { isAuth } = require('./controllers/auth.controller');
+const { get404, globalErrorHandler } = require('./controllers/error.controller');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
@@ -35,6 +36,7 @@ app.use(authRoutes);
 app.use(userRoutes);
 app.use('/admin', adminRoutes);
 
-//MIDDLEWARES
+app.use(get404);
+app.use(globalErrorHandler);
 
 module.exports = app;

@@ -13,8 +13,8 @@ const {
 } = require('../controllers/user.controller');
 
 router.get('/', isAuth, getAllUsers);
-router.get('/:userId', isAuth, getOneUser);
-router.get('/:userId/payment', isAuth, getPayment);
+router.get('/users/:userId', isAuth, getOneUser);
+router.get('/users/:userId/payment', isAuth, getPayment);
 router.post('/payment', isAuth, postPayment);
 router.get('/messages/:userId', isAuth, getUserMessages);
 router.post('/deleteMessage', isAuth, deleteMessage);

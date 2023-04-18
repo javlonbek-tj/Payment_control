@@ -6,6 +6,7 @@ const excelJS = require('exceljs');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const AppError = require('../services/AppError');
 
 const getAddUser = (req, res, next) => {
   try {
@@ -26,7 +27,7 @@ const getAddUser = (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -101,7 +102,7 @@ const postAddUser = async (req, res, next) => {
     }
     res.redirect('/');
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -120,7 +121,7 @@ const getUpdateUser = async (req, res, next) => {
       errorMessage: '',
     });
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -163,9 +164,9 @@ const postUpdateUser = async (req, res, next) => {
       login ? login : oldlogin,
       password ? password : oldpassword,
     );
-    res.redirect(`/${userId}`);
+    res.redirect(`/users/${userId}`);
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -179,7 +180,7 @@ const deleteUser = async (req, res, next) => {
     await UserRepo.deleteById(userId);
     res.redirect('/');
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -192,7 +193,7 @@ const getMessages = async (req, res, next) => {
       myMessages,
     });
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -203,7 +204,7 @@ const confirmPayment = async (req, res, next) => {
     await MessageRepo.deleteById(messageId);
     res.redirect('/');
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 const rejectPayment = async (req, res, next) => {
@@ -219,7 +220,7 @@ const rejectPayment = async (req, res, next) => {
     );
     res.redirect('/');
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -257,7 +258,7 @@ const getUsersExcel = async (req, res, next) => {
       res.status(200);
     });
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 
@@ -272,7 +273,7 @@ const getRejectedCashes = async (req, res, next) => {
       rejectedCashes,
     });
   } catch (err) {
-    console.log(err);
+    next(new AppError(err, 500));
   }
 };
 

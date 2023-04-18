@@ -4,21 +4,13 @@
   "description": "payment and attendance control of learners",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
+    "start": "SET NODE_ENV=production&&node server.js",
+    "dev": "SET NODE_ENV=development&&nodemon server.js",
     "migrate": "node-pg-migrate"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/javlonbek-tj/Payment_control.git"
   },
   "author": "tjdeveloper",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/javlonbek-tj/Payment_control/issues"
-  },
-  "homepage": "https://github.com/javlonbek-tj/Payment_control#readme",
   "devDependencies": {
     "nodemon": "^2.0.20"
   },
