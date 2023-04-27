@@ -232,7 +232,7 @@
                   <% } %>
                   <td>
                     <% if(singleUser.login == user.login || user.role === 'admin') {%>
-                    <a href="/<%= singleUser.id%>">Ko'rish</a>
+                    <a href="/users/<%= singleUser.id%>">Ko'rish</a>
                     <% } else { %>
                     <a>Ko'rish</a>
                     <% } %>

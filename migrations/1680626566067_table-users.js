@@ -16,6 +16,7 @@ exports.up = pgm => {
         date TIMESTAMP NOT NULL,
         login VARCHAR(20) NOT NULL,
         password VARCHAR(300) NOT NULL,
+        phoneNumber VARCHAR(20) NOT NULL,
         paymentStatus VARCHAR(15) DEFAULT 'not paid',
         paymentCashUrl VARCHAR(150),
         role VARCHAR(15) NOT NULL DEFAULT 'user'

@@ -10,17 +10,27 @@ class UserRepo {
     const { rows } = await pool.query('SELECT * FROM users WHERE id = $1;', [id]);
     return toCamelCase(rows)[0];
   }
-  static async insert(firstname, lastname, course, mentor, date, login, password, role) {
+  static async insert(
+    firstname,
+    lastname,
+    course,
+    mentor,
+    date,
+    login,
+    password,
+    phoneNumber,
+    role,
+  ) {
     const { rows } = await pool.query(
-      'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *; ',
-      [firstname, lastname, course, mentor, date, login, password, role],
+      'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, phoneNumber, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *; ',
+      [firstname, lastname, course, mentor, date, login, password, phoneNumber, role],
     );
     return toCamelCase(rows)[0];
   }
-  static async update(id, firstname, lastname, course, mentor, login, password) {
+  static async update(id, firstname, lastname, course, mentor, login, hashedPassword, phoneNumber) {
     const { rows } = await pool.query(
-      'UPDATE users SET firstname = $1, lastname = $2, course = $3, mentor = $4, login = $5, password = $6 WHERE id = $7 RETURNING *;',
-      [firstname, lastname, course, mentor, login, password, id],
+      'UPDATE users SET firstname = $1, lastname = $2, course = $3, mentor = $4, login = $5, password = $6, phoneNumber = $7 WHERE id = $8 RETURNING *;',
+      [firstname, lastname, course, mentor, login, hashedPassword, phoneNumber, id],
     );
     return toCamelCase(rows);
   }

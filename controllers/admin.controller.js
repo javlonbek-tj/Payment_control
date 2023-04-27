@@ -35,6 +35,7 @@ const postAddUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     const { firstname, lastname, course, mentor, login, password, isAdmin } = req.body;
+    const phoneNumber = password;
     let { date } = req.body;
     if (!errors.isEmpty()) {
       return res.status(422).render('admin/addUser', {
@@ -86,6 +87,7 @@ const postAddUser = async (req, res, next) => {
         date,
         login,
         hashedpassword,
+        phoneNumber,
         'admin',
       );
     } else {
@@ -97,6 +99,7 @@ const postAddUser = async (req, res, next) => {
         date,
         login,
         hashedpassword,
+        phoneNumber,
         'user',
       );
     }
@@ -129,6 +132,7 @@ const postUpdateUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     const { userId, firstname, lastname, course, mentor, login, password } = req.body;
+    const phoneNumber = password;
     const oldUser = await UserRepo.findById(userId);
     if (!oldUser) {
       return res.status(400).json('Ushbu foydalanuvchi topilmadi');
@@ -155,6 +159,11 @@ const postUpdateUser = async (req, res, next) => {
     const oldMentor = oldUser.mentor;
     const oldlogin = oldUser.login;
     const oldpassword = oldUser.password;
+    const oldPhoneNumber = oldUser.phoneNumber;
+    let hashedpassword;
+    if (password) {
+      hashedpassword = await bcrypt.hash(password, 12);
+    }
     await UserRepo.update(
       userId,
       firstname ? firstname : oldFirstname,
@@ -162,7 +171,8 @@ const postUpdateUser = async (req, res, next) => {
       course ? course : oldCourse,
       mentor ? mentor : oldMentor,
       login ? login : oldlogin,
-      password ? password : oldpassword,
+      password ? hashedpassword : oldpassword,
+      password ? phoneNumber : oldPhoneNumber,
     );
     res.redirect(`/users/${userId}`);
   } catch (err) {
