@@ -44,25 +44,16 @@ class UserRepo {
   }
 
   static async changePaymentStatusToProgress(userId) {
-    const { rows } = await pool.query(
-      `UPDATE users SET paymentstatus = 'in progress' WHERE id = $1 RETURNING *;`,
-      [userId],
-    );
-    return toCamelCase(rows)[0];
+    await pool.query(`UPDATE users SET paymentstatus = 'in progress' WHERE id = $1;`, [userId]);
   }
   static async changePaymentStatusToPaid(userId) {
-    const { rows } = await pool.query(
-      `UPDATE users SET paymentstatus = 'paid' WHERE id = $1 RETURNING *;`,
-      [userId],
-    );
-    return toCamelCase(rows)[0];
+    await pool.query(`UPDATE users SET paymentstatus = 'paid' WHERE id = $1`, [userId]);
+  }
+  static async payedByCash(userId) {
+    await pool.query(`UPDATE users SET paymentByCash = true WHERE id = $1`, [userId]);
   }
   static async changePaymentStatusToRejected(userId) {
-    const { rows } = await pool.query(
-      `UPDATE users SET paymentstatus = 'rejected' WHERE id = $1 RETURNING *;`,
-      [userId],
-    );
-    return toCamelCase(rows)[0];
+    await pool.query(`UPDATE users SET paymentstatus = 'rejected' WHERE id = $1`, [userId]);
   }
 
   static async uploadCash(pdf, userId) {

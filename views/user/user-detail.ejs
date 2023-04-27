@@ -47,11 +47,22 @@
                     <input type="hidden" name="userId" value="<%= student.id %>" />
                     <button type="submit" class="btn btn-danger fs-5">O'chirish</button>
                   </form>
-                  <% } %>
+                  <% if(student.paymentstatus === "To'lanmadi") {%>
+                  <form action="/admin/payByCash" method="POST" class="mt-3">
+                    <input type="hidden" name="userId" value="<%= student.id %>" />
+                    <button type="submit" class="btn btn-primary fs-5">
+                      Naqd pul orqali to'lash
+                    </button>
+                  </form>
+                  <% } %> <% } %>
                 </div>
                 <div class="col-md-8">
                   <div class="card-body p-4">
+                    <% if(user.role === user) { %>
                     <h2 class="text-success">Mening ma'lumotlarim</h2>
+                    <% } else { %>
+                    <h2 class="text-success">Foydalanuvchi ma'lumotlari</h2>
+                    <% } %>
                     <hr class="mt-0 mb-5" />
                     <div class="pt-1">
                       <div class="mb-2 d-flex justify-content-between">
@@ -89,7 +100,11 @@
                       <% if(student.paymentstatus === "To'landi") {%>
                       <div class="mb-5 d-flex justify-content-between">
                         <h4>To'lov cheki:</h4>
+                        <% if(student.paymentbycash) {%>
+                        <p class="text-muted fs-4">Naqd pul orqali to'landi</p>
+                        <% } %> <% if(student.paymentcashurl) {%>
                         <a href="/<%= student.paymentcashurl%>" class="fs-4">PDF</a>
+                        <% } %>
                       </div>
                       <% } %> <% if(student.paymentstatus === "Rad etilgan") {%>
                       <div class="mb-5 d-flex justify-content-between">
@@ -100,15 +115,17 @@
                       </div>
                       <% } %>
                     </div>
+                    <% if(user.role === 'user') {%>
                     <div class="d-flex justify-content-between fs-4">
                       <% if(student.paymentstatus === "Rad etilgan") {%>
-                      <a href="/<%= student.id%>/payment">To'lov qilish</a>
+                      <a href="/users/<%= student.id%>/payment">To'lov qilish</a>
                       <% }%> <% if(student.paymentstatus === "To'lanmadi") {%>
-                      <a href="/<%= student.id%>/payment">To'lov qilish</a>
+                      <a href="/users/<%= student.id%>/payment">To'lov qilish</a>
                       <% }%>
                       <a href="/messages/<%=student.id%>">Xabarlarim</a>
                       <a href="/logout">Chiqish</a>
                     </div>
+                    <% } %>
                     <hr class="mt-0 mb-4" />
                   </div>
                 </div>

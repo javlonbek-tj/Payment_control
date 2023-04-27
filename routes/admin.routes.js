@@ -13,6 +13,7 @@ const {
   deleteUser,
   getMessages,
   confirmPayment,
+  payByCash,
   rejectPayment,
   getUsersExcel,
   getRejectedCashes,
@@ -62,6 +63,7 @@ router.post(
 router.post('/deleteUser', isAuth, restrictTo('admin'), deleteUser);
 router.get('/messages', isAuth, restrictTo('admin'), getMessages);
 router.post('/confirmPayment', isAuth, restrictTo('admin'), confirmPayment);
+router.post('/payByCash', isAuth, restrictTo('admin'), payByCash);
 router.post('/rejectPayment', isAuth, restrictTo('admin'), rejectPayment);
 router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
 router.get('/rejectedCashes', isAuth, getRejectedCashes);

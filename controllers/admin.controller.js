@@ -217,6 +217,18 @@ const confirmPayment = async (req, res, next) => {
     next(new AppError(err, 500));
   }
 };
+
+const payByCash = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    await UserRepo.changePaymentStatusToPaid(userId);
+    await UserRepo.payedByCash(userId);
+    res.redirect('/');
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
 const rejectPayment = async (req, res, next) => {
   try {
     const { userId, rejectionReason, messageId } = req.body;
@@ -295,6 +307,7 @@ module.exports = {
   deleteUser,
   getMessages,
   confirmPayment,
+  payByCash,
   rejectPayment,
   getUsersExcel,
   getRejectedCashes,

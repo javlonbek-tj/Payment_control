@@ -19,6 +19,7 @@ exports.up = pgm => {
         phoneNumber VARCHAR(20) NOT NULL,
         paymentStatus VARCHAR(15) DEFAULT 'not paid',
         paymentCashUrl VARCHAR(150),
+        paymentByCash BOOLEAN DEFAULT false,
         role VARCHAR(15) NOT NULL DEFAULT 'user'
     );
     `);
