@@ -14,8 +14,9 @@ const month = [
 ];
 
 const getMonth = queryDate => {
+  const getYear = new Date(queryDate).getFullYear();
   const getMonth = month[new Date(queryDate).getMonth()];
-  return getMonth;
+  return ` ${getYear} yil ${getMonth}`;
 };
 
 const checkPaymentStatus = item => {

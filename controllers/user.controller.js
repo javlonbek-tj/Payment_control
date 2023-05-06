@@ -4,10 +4,35 @@ const { formatData, getMonth } = require('../repos/utils/formatData');
 const findByCategories = require('../repos/utils/filtering');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 const AppError = require('../services/AppError');
+const CronJob = require('cron').CronJob;
+
+const job = new CronJob('0 0 1 * *', async function () {
+  console.log(new Date());
+  console.log(1);
+  const allUsers = await UserRepo.find();
+  allUsers.forEach(user => {
+    UserRepo.insertUsersHistory(
+      user.id,
+      user.firstname,
+      user.lastname,
+      user.course,
+      user.mentor,
+      user.date,
+      user.phonenumber,
+      user.paymentstatus,
+      user.paymentcashurl,
+      user.paymentbycash,
+      user.role,
+    );
+  });
+  await UserRepo.passUserToTheNextMonth();
+});
+job.start();
 
 let filteredUsers = [];
 const getAllUsers = async (req, res, next) => {
   try {
+    console.log(new Date());
     let users;
     let courseName;
     if (req.query.search) {
@@ -46,6 +71,7 @@ const getAllUsers = async (req, res, next) => {
       filteredUsers.push(users);
     }
     const allUsers = await UserRepo.find();
+
     const mathUsers = allUsers.filter(user => user.course === 'Matematika');
     const mathPaidUsers = mathUsers.filter(user => user.paymentstatus === 'paid');
     const englishUsers = allUsers.filter(user => user.course === 'Ingliz tili');

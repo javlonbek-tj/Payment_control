@@ -210,8 +210,8 @@ const getMessages = async (req, res, next) => {
 const confirmPayment = async (req, res, next) => {
   try {
     const { userId, messageId } = req.body;
-    await UserRepo.changePaymentStatusToPaid(userId);
     await MessageRepo.deleteById(messageId);
+    await UserRepo.changePaymentStatusToPaid(userId);
     res.redirect('/');
   } catch (err) {
     next(new AppError(err, 500));
@@ -221,8 +221,8 @@ const confirmPayment = async (req, res, next) => {
 const payByCash = async (req, res, next) => {
   try {
     const { userId } = req.body;
+    await UserRepo.paidByCash(userId);
     await UserRepo.changePaymentStatusToPaid(userId);
-    await UserRepo.payedByCash(userId);
     res.redirect('/');
   } catch (err) {
     next(new AppError(err, 500));

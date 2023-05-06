@@ -47,10 +47,10 @@ class UserRepo {
     await pool.query(`UPDATE users SET paymentstatus = 'in progress' WHERE id = $1;`, [userId]);
   }
   static async changePaymentStatusToPaid(userId) {
-    await pool.query(`UPDATE users SET paymentstatus = 'paid' WHERE id = $1`, [userId]);
+    await pool.query(`UPDATE users SET paymentstatus = 'paid' WHERE id = $1;`, [userId]);
   }
-  static async payedByCash(userId) {
-    await pool.query(`UPDATE users SET paymentByCash = true WHERE id = $1`, [userId]);
+  static async paidByCash(userId) {
+    await pool.query(`UPDATE users SET paymentByCash = true WHERE id = $1;`, [userId]);
   }
   static async changePaymentStatusToRejected(userId) {
     await pool.query(`UPDATE users SET paymentstatus = 'rejected' WHERE id = $1`, [userId]);
@@ -78,6 +78,43 @@ class UserRepo {
       [course, mentor, paymentstatus, dateFrom, dateTo],
     );
     return toCamelCase(rows);
+  }
+
+  static async insertUsersHistory(
+    userId,
+    firstname,
+    lastname,
+    course,
+    mentor,
+    date,
+    phoneNumber,
+    paymentStatus,
+    paymentCashUrl,
+    paymentByCash,
+    role,
+  ) {
+    await pool.query(
+      'INSERT INTO usersHistory(userId, firstname, lastname, course, mentor, date, phoneNumber, paymentStatus, paymentCashUrl, paymentByCash, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
+      [
+        userId,
+        firstname,
+        lastname,
+        course,
+        mentor,
+        date,
+        phoneNumber,
+        paymentStatus,
+        paymentCashUrl,
+        paymentByCash,
+        role,
+      ],
+    );
+  }
+
+  static async passUserToTheNextMonth() {
+    await pool.query(
+      `UPDATE users SET paymentstatus = 'not paid', date = date_trunc('month', date) + INTERVAL '1 month';`,
+    );
   }
 }
 
