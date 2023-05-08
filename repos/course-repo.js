@@ -9,6 +9,10 @@ class CourseRepo {
     const { rows } = await pool.query('SELECT * FROM courses');
     return rows;
   }
+  static async findByName(name) {
+    const { rows } = await pool.query('SELECT * FROM courses WHERE name = $1;', [name]);
+    return rows;
+  }
 }
 
 module.exports = CourseRepo;

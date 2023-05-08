@@ -43,7 +43,7 @@
           <select name="course">
             <option <%= (update || error && student.course) ? '' : 'selected' %> disabled>Kursni tanlang</option>
             <% for(let course of courses) {%>
-            <option value="<% course.id %>" <%= (student.courseId.name === course.name) ? 'selected' : '' %>><%= course.name %></option>
+            <option value="<%= course.name %>" <%= (student.course === course.name) ? 'selected' : '' %>><%= course.name %></option>
             <% } %> 
           </select>
         </div>
@@ -52,7 +52,7 @@
           <select name="mentor">
             <option <%= (update || error && student.mentor) ? '' : 'selected' %> disabled>O'qituvchini tanlang</option>
             <% for(let mentor of mentors) {%>
-              <option value="<% mentor.id %>" <%= (student.mentorId.name === mentor.name) ? 'selected' : '' %>><%= mentor.name %></option>
+              <option value="<%= mentor.name %>" <%= (student.mentor === mentor.name) ? 'selected' : '' %>><%= mentor.name %></option>
               <% } %> 
           </select>
         </div>

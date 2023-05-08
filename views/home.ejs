@@ -31,6 +31,30 @@
               >
             </a>
           </li>
+          <% if(user.role === 'admin') {%>
+          <li>
+            <a href="/admin/addCourse">
+              <i class="fas fa-book"></i>
+              <span class="nav-item"
+                >Kurs qo'shish</span
+              >
+            </a>
+          </li>
+          <li>
+            <a href="/admin/addMentor">
+              <i class="fas fa-chalkboard-user"></i>
+              <span class="nav-item"
+                >Mentor qo'shish</span
+              >
+            </a>
+          </li>
+          <li>
+            <a href="/admin/rejectedCashes">
+              <i class="fas fa-file-invoice"></i>
+              <span class="nav-item">Rad etilgan cheklar</span>
+            </a>
+          </li>
+          <% } %>
           <li>
             <% if(user.role === 'admin') {%>
             <a href="/admin/messages">
@@ -44,21 +68,6 @@
               <span class="nav-item">Xabarlar</span>
             </a>
           </li>
-          <% if(user.role === 'admin') {%>
-          <li>
-            <a href="/admin/rejectedCashes">
-              <i class="fas fa-file-invoice"></i>
-              <span class="nav-item">Rad etilgan cheklar</span>
-            </a>
-          </li>
-          <% } %>
-          <!-- <li>
-            <a href="#">
-              <i class="fas fa-cog"></i>
-              <span class="nav-item">Setting</span>
-            </a>
-          </li> -->
-
           <li>
             <a href="/logout">
               <i class="fas fa-sign-out-alt"></i>
@@ -72,14 +81,15 @@
           <a href="/" class="logo">Payment Control</a>
         </div>
         <div class="users">
+          <% for (course of courses) { %>
           <div class="card">
-            <h4>Matematika</h4>
+            <h4><%= course.name %></h4>
             <h6><%= prevMonth%> oyi uchun</h2>
             <div class="per">
               <table>
                 <tr>
-                  <td><span><%= mathUsers ? mathUsers.length : 0 %></span></td>
-                  <td><span><%= mathPaidUsers ? mathPaidUsers.length : 0 %></span></td>
+                  <td><span><%= course.courseAllUsers ? course.courseAllUsers.length : 0 %></span></td>
+                  <td><span><%= course.coursePaidUsers ? course.coursePaidUsers.length : 0 %></span></td>
                 </tr>
                 <tr>
                   <td>O'quvchilar</td>
@@ -87,59 +97,9 @@
                 </tr>
               </table>
             </div>
-            <a href="/?course=math">Barchasi</a>
+            <a href="/?course=<%= course.name %>">Barchasi</a>
           </div>
-          <div class="card">
-            <h4>Ingliz tili</h4>
-            <h6><%= prevMonth%> oyi uchun</h2>
-            <div class="per">
-              <table>
-                <tr>
-                  <td><span><%= englishUsers ? englishUsers.length : 0 %></span></td>
-                  <td><span><%= englishPaidUsers ? englishPaidUsers.length : 0 %></span></td>
-                </tr>
-                <tr>
-                  <td>O'quvchilar</td>
-                  <td>To'ladi</td>
-                </tr>
-              </table>
-            </div>
-            <a href="/?course=english">Barchasi</a>
-          </div>
-          <div class="card">
-            <h4>Fizika</h4>
-            <h6><%= prevMonth%> oyi uchun</h2>
-            <div class="per">
-              <table>
-                <tr>
-                  <td><span><%= physicsUsers ? physicsUsers.length : 0 %></span></td>
-                  <td><span><%= physicsPaidUsers ? physicsPaidUsers.length : 0 %></span></td>
-                </tr>
-                <tr>
-                  <td>O'quvchilar</td>
-                  <td>To'ladi</td>
-                </tr>
-              </table>
-            </div>
-            <a href="/?course=physics">Barchasi</a>
-          </div>
-          <div class="card">
-            <h4>Kimyo</h4>
-            <h6><%= prevMonth%> oyi uchun</h2>
-            <div class="per">
-              <table>
-                <tr>
-                  <td><span><%= chemistryUsers ? chemistryUsers.length : 0 %></span></td>
-                  <td><span><%= chemistryPaidUsers ? chemistryPaidUsers.length : 0 %></span></td>
-                </tr>
-                <tr>
-                  <td>O'quvchilar</td>
-                  <td>To'ladi</td>
-                </tr>
-              </table>
-            </div>
-            <a href="/?course=chemistry">Barchasi</a>
-          </div>
+          <% } %>
         </div>
 
         <section class="attendance">

@@ -5,8 +5,8 @@ const findByCategories = require('../repos/utils/filtering');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 const AppError = require('../services/AppError');
 const UsersByCourse = require('../repos/utils/usersByCourse');
-const makeCourseUzbek = require('../repos/utils/course-to-uzbek');
 const job = require('../repos/utils/cronJob');
+const CourseRepo = require('../repos/course-repo');
 
 // Execute cron  job
 job.start();
@@ -21,8 +21,8 @@ const getAllUsers = async (req, res, next) => {
       users = await UserRepo.findPartial(search);
     } else if (req.query.course || req.query.mentor || req.query.paymentstatus || req.query.dateFrom || req.query.dateTo) {
       let { course, mentor, paymentstatus, dateFrom, dateTo } = req.query;
-      courseName = makeCourseUzbek(course);
       users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo);
+      courseName = course;
     } else {
       users = await UserRepo.findAllUniqueUsers();
     }
@@ -33,14 +33,20 @@ const getAllUsers = async (req, res, next) => {
       filteredUsers.push(users);
     }
     const allUsers = await UserRepo.find();
-    const mathUsers = UsersByCourse.usersByCourse(allUsers, 'Matematika');
+    const courses = await CourseRepo.find();
+    courses.map(course => {
+      course.courseAllUsers = UsersByCourse.usersByCourse(allUsers, course.name);
+      course.coursePaidUsers = UsersByCourse.paidUsers(allUsers, course.name, getPrevMonthDate().getMonth());
+      return course;
+    });
+    /* const mathUsers = UsersByCourse.usersByCourse(allUsers, 'Matematika');
     const mathPaidUsers = UsersByCourse.paidUsers(allUsers, 'Matematika', getPrevMonthDate().getMonth());
     const englishUsers = UsersByCourse.usersByCourse(allUsers, 'Ingliz tili');
     const englishPaidUsers = UsersByCourse.paidUsers(allUsers, 'Ingliz tili', getPrevMonthDate().getMonth());
     const physicsUsers = UsersByCourse.usersByCourse(allUsers, 'Fizika');
     const physicsPaidUsers = UsersByCourse.paidUsers(allUsers, 'Fizika', getPrevMonthDate().getMonth());
     const chemistryUsers = UsersByCourse.usersByCourse(allUsers, 'Kimyo');
-    const chemistryPaidUsers = UsersByCourse.paidUsers(allUsers, 'Kimyo', getPrevMonthDate().getMonth());
+    const chemistryPaidUsers = UsersByCourse.paidUsers(allUsers, 'Kimyo', getPrevMonthDate().getMonth()); */
     const unreadMessages = await MessageRepo.findUnreadMessages(req.user.id);
     const prevMonth = getMonth(getPrevMonthDate());
     res.render('home', {
@@ -48,14 +54,15 @@ const getAllUsers = async (req, res, next) => {
       users,
       unreadMessages,
       courseName,
-      mathUsers,
+      courses,
+      /* mathUsers,
       englishUsers,
       physicsUsers,
       chemistryUsers,
       mathPaidUsers,
       englishPaidUsers,
       physicsPaidUsers,
-      chemistryPaidUsers,
+      chemistryPaidUsers, */
       prevMonth,
     });
   } catch (err) {

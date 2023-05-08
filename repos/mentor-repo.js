@@ -9,6 +9,11 @@ class MentorRepo {
     const { rows } = await pool.query('SELECT * FROM mentors');
     return rows;
   }
+
+  static async findByName(name) {
+    const { rows } = await pool.query('SELECT * FROM mentors WHERE name = $1;', [name]);
+    return rows;
+  }
 }
 
 module.exports = MentorRepo;

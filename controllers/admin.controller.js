@@ -14,18 +14,22 @@ const getAddUser = async (req, res, next) => {
   try {
     const courses = await CourseRepo.find();
     const mentors = await MentorRepo.find();
+    let errorMessage = null;
+    if (courses.length === 0 || mentors.length === 0) {
+      errorMessage = `Iltimos avval mentor va kursni qo'shing`;
+    }
     res.render('admin/addUser', {
       pageTitle: "Ro'yxatga olish",
       update: null,
       error: null,
-      errorMessage: null,
+      errorMessage,
       courses,
       mentors,
       student: {
         firstname: '',
         lastname: '',
-        courseId: '',
-        mentorId: '',
+        course: '',
+        mentor: '',
         date: '',
         login: '',
         password: '',
@@ -50,6 +54,33 @@ const getAddCourse = async (req, res, next) => {
   }
 };
 
+const postAddCourse = async (req, res, next) => {
+  try {
+    const courses = await CourseRepo.find();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.render('admin/addCourse', {
+        pageTitle: `Kurs qo'shish`,
+        errorMessage: errors.array()[0].msg,
+        courses,
+      });
+    }
+    const { name } = req.body;
+    const course = await CourseRepo.findByName(name);
+    if (course.length > 0) {
+      return res.render('admin/addCourse', {
+        pageTitle: `Kurs qo'shish`,
+        errorMessage: `${name} oldin qo'shilgan`,
+        courses,
+      });
+    }
+    await CourseRepo.insert(name);
+    res.redirect('/admin/addCourse');
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
 const getAddMentor = async (req, res, next) => {
   try {
     const mentors = await MentorRepo.find();
@@ -63,10 +94,39 @@ const getAddMentor = async (req, res, next) => {
   }
 };
 
+const postAddMentor = async (req, res, next) => {
+  try {
+    const mentors = await MentorRepo.find();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.render('admin/addMentor', {
+        pageTitle: `Mentor qo'shish`,
+        errorMessage: errors.array()[0].msg,
+        mentors,
+      });
+    }
+    const { name } = req.body;
+    const mentor = await MentorRepo.findByName(name);
+    if (mentor.length > 0) {
+      return res.render('admin/addMentor', {
+        pageTitle: `Mentor qo'shish`,
+        errorMessage: `${name} oldin qo'shilgan`,
+        mentors,
+      });
+    }
+    await MentorRepo.insert(name);
+    res.redirect('/admin/addMentor');
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
 const postAddUser = async (req, res, next) => {
   try {
+    const courses = await CourseRepo.find();
+    const mentors = await MentorRepo.find();
     const errors = validationResult(req);
-    const { firstname, lastname, courseId, mentorId, login, password, isAdmin } = req.body;
+    const { firstname, lastname, course, mentor, login, password, isAdmin } = req.body;
     const phoneNumber = password;
     let { date } = req.body;
     if (!errors.isEmpty()) {
@@ -74,12 +134,14 @@ const postAddUser = async (req, res, next) => {
         pageTitle: "Ro'yxatga olish",
         update: null,
         error: true,
+        courses,
+        mentors,
         errorMessage: errors.array()[0].msg,
         student: {
           firstname,
           lastname,
-          courseId,
-          mentorId,
+          course,
+          mentor,
           date,
           login,
           password,
@@ -100,8 +162,8 @@ const postAddUser = async (req, res, next) => {
         student: {
           firstname,
           lastname,
-          courseId,
-          mentorId,
+          course,
+          mentor,
           date,
           login,
           password,
@@ -111,9 +173,9 @@ const postAddUser = async (req, res, next) => {
     }
     const hashedpassword = await bcrypt.hash(password, 12);
     if (isAdmin === 'admin') {
-      await UserRepo.insert(firstname, lastname, courseId, mentorId, date, login, hashedpassword, phoneNumber, 'admin');
+      await UserRepo.insert(firstname, lastname, course, mentor, date, login, hashedpassword, phoneNumber, 'admin');
     } else {
-      await UserRepo.insert(firstname, lastname, courseId, mentorId, date, login, hashedpassword, phoneNumber, 'user');
+      await UserRepo.insert(firstname, lastname, course, mentor, date, login, hashedpassword, phoneNumber, 'user');
     }
     res.redirect('/');
   } catch (err) {
@@ -143,7 +205,7 @@ const getUpdateUser = async (req, res, next) => {
 const postUpdateUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    const { userId, firstname, lastname, courseId, mentorId, login, password } = req.body;
+    const { userId, firstname, lastname, course, mentor, login, password } = req.body;
     const phoneNumber = password;
     const oldUser = await UserRepo.findById(userId);
     if (!oldUser) {
@@ -158,8 +220,8 @@ const postUpdateUser = async (req, res, next) => {
         student: {
           firstname,
           lastname,
-          courseId,
-          mentorId,
+          course,
+          mentor,
           login,
           password,
         },
@@ -167,8 +229,8 @@ const postUpdateUser = async (req, res, next) => {
     }
     const oldFirstname = oldUser.firstname;
     const oldLastname = oldUser.lastname;
-    const oldCourse = oldUser.courseId;
-    const oldMentor = oldUser.mentorId;
+    const oldCourse = oldUser.course;
+    const oldMentor = oldUser.mentor;
     const oldlogin = oldUser.login;
     const oldpassword = oldUser.password;
     const oldPhoneNumber = oldUser.phoneNumber;
@@ -180,8 +242,8 @@ const postUpdateUser = async (req, res, next) => {
       userId,
       firstname ? firstname : oldFirstname,
       lastname ? lastname : oldLastname,
-      courseId ? courseId : oldCourse,
-      mentorId ? mentorId : oldMentor,
+      course ? course : oldCourse,
+      mentor ? mentor : oldMentor,
       login ? login : oldlogin,
       password ? hashedpassword : oldpassword,
       password ? phoneNumber : oldPhoneNumber,
@@ -318,5 +380,7 @@ module.exports = {
   getUsersExcel,
   getRejectedCashes,
   getAddCourse,
+  postAddCourse,
   getAddMentor,
+  postAddMentor,
 };
