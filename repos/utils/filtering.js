@@ -11,17 +11,17 @@ const findByCategories = async (course, mentor, paymentstatus, dateFrom, dateTo)
   }
   //If exists only course
   if (course && !mentor && !paymentstatus && !dateFrom && !dateTo) {
-    const { rows } = await pool.query('SELECT * FROM users WHERE course = $1 AND role = $2;', [
-      course,
-      'user',
-    ]);
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE course = $1 AND role = $2 AND history =$3;',
+      [course, 'user', 'false'],
+    );
     return toCamelCase(rows);
   }
   // If exists course and mentor
   if (course && mentor && !paymentstatus && !dateFrom && !dateTo) {
     const { rows } = await pool.query(
-      'SELECT * FROM users WHERE course = $1 AND mentor = $2 AND role = $3;',
-      [course, mentor, 'user'],
+      'SELECT * FROM users WHERE course = $1 AND mentor = $2 AND role = $3 AND history = $4;',
+      [course, mentor, 'user', 'false'],
     );
     return toCamelCase(rows);
   }
@@ -107,10 +107,10 @@ const findByCategories = async (course, mentor, paymentstatus, dateFrom, dateTo)
   }
   // If exists only mentor
   if (!course && mentor && !paymentstatus && !dateFrom && !dateTo) {
-    const { rows } = await pool.query('SELECT * FROM users WHERE mentor = $1 AND role = $2;', [
-      mentor,
-      'user',
-    ]);
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE mentor = $1 AND role = $2 AND history = $3;',
+      [mentor, 'user', 'false'],
+    );
     return toCamelCase(rows);
   }
   // If exists mentor and paymentstatus

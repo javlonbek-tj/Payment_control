@@ -10,7 +10,6 @@ exports.up = pgm => {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         firstname VARCHAR(40) NOT NULL,
         lastname VARCHAR(20) NOT NULL,
-        UNIQUE(firstname, lastname),
         course VARCHAR(20) NOT NULL,
         mentor VARCHAR(40) NOT NULL,
         date TIMESTAMP NOT NULL,
@@ -20,7 +19,8 @@ exports.up = pgm => {
         paymentStatus VARCHAR(15) DEFAULT 'not paid',
         paymentCashUrl VARCHAR(150),
         paymentByCash BOOLEAN DEFAULT false,
-        role VARCHAR(15) NOT NULL DEFAULT 'user'
+        role VARCHAR(15) NOT NULL DEFAULT 'user',
+        history BOOLEAN DEFAULT false
     );
     `);
 };

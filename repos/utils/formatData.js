@@ -1,22 +1,15 @@
-const month = [
-  'Yanvar',
-  'Fevral',
-  'Mart',
-  'Aprel',
-  'May',
-  'Iyun',
-  'Iyul',
-  'Avgust',
-  'Sentabr',
-  'Oktabr',
-  'Noyabr',
-  'Dekabr',
-];
+const month = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
 
 const getMonth = queryDate => {
   const getYear = new Date(queryDate).getFullYear();
   const getMonth = month[new Date(queryDate).getMonth()];
   return ` ${getYear} yil ${getMonth}`;
+};
+
+const getPrevMonthDate = () => {
+  const today = new Date();
+  const prevMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+  return prevMonthDate;
 };
 
 const checkPaymentStatus = item => {
@@ -51,4 +44,5 @@ const formatData = items => {
 module.exports = {
   formatData,
   getMonth,
+  getPrevMonthDate,
 };

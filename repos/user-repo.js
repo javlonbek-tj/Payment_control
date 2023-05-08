@@ -3,24 +3,18 @@ const toCamelCase = require('./utils/to-camel-case');
 
 class UserRepo {
   static async find() {
-    const { rows } = await pool.query('SELECT * FROM users WHERE role = $1;', ['user']);
+    const { rows } = await pool.query('SELECT * FROM users WHERE role = $1', ['user']);
+    return toCamelCase(rows);
+  }
+  static async findAllUniqueUsers() {
+    const { rows } = await pool.query('SELECT * FROM users WHERE history = $1 AND role = $2;', ['false', 'user']);
     return toCamelCase(rows);
   }
   static async findById(id) {
     const { rows } = await pool.query('SELECT * FROM users WHERE id = $1;', [id]);
     return toCamelCase(rows)[0];
   }
-  static async insert(
-    firstname,
-    lastname,
-    course,
-    mentor,
-    date,
-    login,
-    password,
-    phoneNumber,
-    role,
-  ) {
+  static async insert(firstname, lastname, course, mentor, date, login, password, phoneNumber, role) {
     const { rows } = await pool.query(
       'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, phoneNumber, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *; ',
       [firstname, lastname, course, mentor, date, login, password, phoneNumber, role],
@@ -60,60 +54,62 @@ class UserRepo {
     await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2;`, [pdf, userId]);
   }
   static async deleteCash(userId) {
-    await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2 RETURNING *;`, [
-      null,
-      userId,
-    ]);
+    await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2 RETURNING *;`, [null, userId]);
   }
   static async findPartial(query) {
-    const { rows } = await pool.query(
-      `SELECT * FROM users WHERE firstname ILIKE '%${query}%' AND role = $1;`,
-      ['user'],
-    );
+    const { rows } = await pool.query(`SELECT * FROM users WHERE firstname ILIKE '%${query}%' AND role = $1;`, ['user']);
     return toCamelCase(rows);
   }
   static async findByCategories(course, mentor, paymentstatus, dateFrom, dateTo) {
-    const { rows } = await pool.query(
-      'SELECT * FROM users WHERE course = $1, mentor = $2, paymentstatus = $3, date BETWEEN $4 AND $5;',
-      [course, mentor, paymentstatus, dateFrom, dateTo],
-    );
+    const { rows } = await pool.query('SELECT * FROM users WHERE course = $1, mentor = $2, paymentstatus = $3, date BETWEEN $4 AND $5;', [
+      course,
+      mentor,
+      paymentstatus,
+      dateFrom,
+      dateTo,
+    ]);
     return toCamelCase(rows);
   }
 
-  static async insertUsersHistory(
-    userId,
+  static async insertUsersByHistory(
     firstname,
     lastname,
     course,
     mentor,
     date,
+    login,
+    password,
     phoneNumber,
     paymentStatus,
     paymentCashUrl,
     paymentByCash,
     role,
+    history,
   ) {
     await pool.query(
-      'INSERT INTO usersHistory(userId, firstname, lastname, course, mentor, date, phoneNumber, paymentStatus, paymentCashUrl, paymentByCash, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
+      'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, phoneNumber, paymentStatus, paymentCashUrl, paymentByCash, role, history) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)',
       [
-        userId,
         firstname,
         lastname,
         course,
         mentor,
         date,
+        login,
+        password,
         phoneNumber,
         paymentStatus,
         paymentCashUrl,
         paymentByCash,
         role,
+        history,
       ],
     );
   }
 
   static async passUserToTheNextMonth() {
     await pool.query(
-      `UPDATE users SET paymentstatus = 'not paid', date = date_trunc('month', date) + INTERVAL '1 month';`,
+      `UPDATE users SET paymentstatus = 'not paid', date = date_trunc('month', date) + INTERVAL '1 month' WHERE history = $1;`,
+      ['false'],
     );
   }
 }

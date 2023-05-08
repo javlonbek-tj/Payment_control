@@ -1,68 +1,30 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { formatData, getMonth } = require('../repos/utils/formatData');
+const { formatData, getMonth, getPrevMonthDate } = require('../repos/utils/formatData');
 const findByCategories = require('../repos/utils/filtering');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 const AppError = require('../services/AppError');
-const CronJob = require('cron').CronJob;
+const UsersByCourse = require('../repos/utils/usersByCourse');
+const makeCourseUzbek = require('../repos/utils/course-to-uzbek');
+const job = require('../repos/utils/cronJob');
 
-const job = new CronJob('0 0 1 * *', async function () {
-  console.log(new Date());
-  console.log(1);
-  const allUsers = await UserRepo.find();
-  allUsers.forEach(user => {
-    UserRepo.insertUsersHistory(
-      user.id,
-      user.firstname,
-      user.lastname,
-      user.course,
-      user.mentor,
-      user.date,
-      user.phonenumber,
-      user.paymentstatus,
-      user.paymentcashurl,
-      user.paymentbycash,
-      user.role,
-    );
-  });
-  await UserRepo.passUserToTheNextMonth();
-});
+// Execute cron  job
 job.start();
 
 let filteredUsers = [];
 const getAllUsers = async (req, res, next) => {
   try {
-    console.log(new Date());
     let users;
     let courseName;
     if (req.query.search) {
       const { search } = req.query;
       users = await UserRepo.findPartial(search);
-    } else if (
-      req.query.course ||
-      req.query.mentor ||
-      req.query.paymentstatus ||
-      req.query.dateFrom ||
-      req.query.dateTo
-    ) {
+    } else if (req.query.course || req.query.mentor || req.query.paymentstatus || req.query.dateFrom || req.query.dateTo) {
       let { course, mentor, paymentstatus, dateFrom, dateTo } = req.query;
-      switch (course) {
-        case 'math':
-          course = 'Matematika';
-          break;
-        case 'physics':
-          course = 'Fizika';
-          break;
-        case 'english':
-          course = 'Ingliz tili';
-          break;
-        case 'chemistry':
-          course = 'Kimyo';
-      }
-      courseName = course;
+      courseName = makeCourseUzbek(course);
       users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo);
     } else {
-      users = await UserRepo.find();
+      users = await UserRepo.findAllUniqueUsers();
     }
     if (users.length > 0) {
       users.map(user => (user.date = getMonth(user.date)));
@@ -71,16 +33,16 @@ const getAllUsers = async (req, res, next) => {
       filteredUsers.push(users);
     }
     const allUsers = await UserRepo.find();
-
-    const mathUsers = allUsers.filter(user => user.course === 'Matematika');
-    const mathPaidUsers = mathUsers.filter(user => user.paymentstatus === 'paid');
-    const englishUsers = allUsers.filter(user => user.course === 'Ingliz tili');
-    const englishPaidUsers = englishUsers.filter(user => user.paymentstatus === 'paid');
-    const physicsUsers = allUsers.filter(user => user.course === 'Fizika');
-    const physicsPaidUsers = physicsUsers.filter(user => user.paymentstatus === 'paid');
-    const chemistryUsers = allUsers.filter(user => user.course === 'Kimyo');
-    const chemistryPaidUsers = chemistryUsers.filter(user => user.paymentstatus === 'paid');
+    const mathUsers = UsersByCourse.usersByCourse(allUsers, 'Matematika');
+    const mathPaidUsers = UsersByCourse.paidUsers(allUsers, 'Matematika', getPrevMonthDate().getMonth());
+    const englishUsers = UsersByCourse.usersByCourse(allUsers, 'Ingliz tili');
+    const englishPaidUsers = UsersByCourse.paidUsers(allUsers, 'Ingliz tili', getPrevMonthDate().getMonth());
+    const physicsUsers = UsersByCourse.usersByCourse(allUsers, 'Fizika');
+    const physicsPaidUsers = UsersByCourse.paidUsers(allUsers, 'Fizika', getPrevMonthDate().getMonth());
+    const chemistryUsers = UsersByCourse.usersByCourse(allUsers, 'Kimyo');
+    const chemistryPaidUsers = UsersByCourse.paidUsers(allUsers, 'Kimyo', getPrevMonthDate().getMonth());
     const unreadMessages = await MessageRepo.findUnreadMessages(req.user.id);
+    const prevMonth = getMonth(getPrevMonthDate());
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
       users,
@@ -94,6 +56,7 @@ const getAllUsers = async (req, res, next) => {
       englishPaidUsers,
       physicsPaidUsers,
       chemistryPaidUsers,
+      prevMonth,
     });
   } catch (err) {
     next(new AppError(err, 500));
@@ -146,10 +109,7 @@ const postPayment = async (req, res, next) => {
     await UserRepo.uploadCash(pdfCashUrl, userId);
     const user = await UserRepo.changePaymentStatusToProgress(userId);
     const month = getMonth(user.date);
-    await MessageRepo.insert(
-      `${user.firstname} ${month} oyi uchun to'lovni amalga oshirdi`,
-      userId,
-    );
+    await MessageRepo.insert(`${user.firstname} ${month} oyi uchun to'lovni amalga oshirdi`, userId);
     res.redirect('/');
   } catch (err) {
     next(new AppError(err, 500));
