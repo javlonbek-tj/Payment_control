@@ -7,6 +7,8 @@ const router = Router();
 
 const {
   getAddUser,
+  getAddCourse,
+  getAddMentor,
   postAddUser,
   getUpdateUser,
   postUpdateUser,
@@ -20,7 +22,9 @@ const {
 } = require('../controllers/admin.controller');
 
 router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
-router.get('/addUser', isAuth, restrictTo('admin'), getAddUser);
+router.get('/addUser', getAddUser);
+router.get('/addCourse', getAddCourse);
+router.get('/addMentor', getAddMentor);
 router.post(
   '/addUser',
   [
@@ -43,8 +47,6 @@ router.post(
       .isLength(9)
       .withMessage("Parol 9 ta belgidan iborat bo'lishi kerak"),
   ],
-  isAuth,
-  restrictTo('admin'),
   postAddUser,
 );
 router.get('/:userId/changeUserInfo', isAuth, restrictTo('admin'), getUpdateUser);

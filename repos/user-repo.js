@@ -3,28 +3,37 @@ const toCamelCase = require('./utils/to-camel-case');
 
 class UserRepo {
   static async find() {
-    const { rows } = await pool.query('SELECT * FROM users WHERE role = $1', ['user']);
+    const { rows } = await pool.query(
+      'SELECT * FROM users JOIN courses ON users.courseId = courses.id JOIN mentors ON users.mentorId = mentors.id WHERE role = $1',
+      ['user'],
+    );
     return toCamelCase(rows);
   }
   static async findAllUniqueUsers() {
-    const { rows } = await pool.query('SELECT * FROM users WHERE history = $1 AND role = $2;', ['false', 'user']);
+    const { rows } = await pool.query(
+      'SELECT * FROM users JOIN courses ON users.courseId = courses.id JOIN mentors ON users.mentorId = mentors.id WHERE history = $1 AND role = $2;',
+      ['false', 'user'],
+    );
     return toCamelCase(rows);
   }
   static async findById(id) {
-    const { rows } = await pool.query('SELECT * FROM users WHERE id = $1;', [id]);
-    return toCamelCase(rows)[0];
-  }
-  static async insert(firstname, lastname, course, mentor, date, login, password, phoneNumber, role) {
     const { rows } = await pool.query(
-      'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, phoneNumber, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *; ',
-      [firstname, lastname, course, mentor, date, login, password, phoneNumber, role],
+      'SELECT * FROM JOIN courses ON users.courseId = courses.id JOIN mentors ON users.mentorId = mentors.id users WHERE id = $1;',
+      [id],
     );
     return toCamelCase(rows)[0];
   }
-  static async update(id, firstname, lastname, course, mentor, login, hashedPassword, phoneNumber) {
+  static async insert(firstname, lastname, courseId, mentorId, date, login, password, phoneNumber, role) {
+    const { rows } = await pool.query(
+      'INSERT INTO users(firstname, lastname, courseId, mentorId, date, login, password, phoneNumber, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *; ',
+      [firstname, lastname, courseId, mentorId, date, login, password, phoneNumber, role],
+    );
+    return toCamelCase(rows)[0];
+  }
+  static async update(id, firstname, lastname, courseId, mentorId, login, hashedPassword, phoneNumber) {
     const { rows } = await pool.query(
       'UPDATE users SET firstname = $1, lastname = $2, course = $3, mentor = $4, login = $5, password = $6, phoneNumber = $7 WHERE id = $8 RETURNING *;',
-      [firstname, lastname, course, mentor, login, hashedPassword, phoneNumber, id],
+      [firstname, lastname, courseId, mentorId, login, hashedPassword, phoneNumber, id],
     );
     return toCamelCase(rows);
   }
@@ -57,25 +66,25 @@ class UserRepo {
     await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2 RETURNING *;`, [null, userId]);
   }
   static async findPartial(query) {
-    const { rows } = await pool.query(`SELECT * FROM users WHERE firstname ILIKE '%${query}%' AND role = $1;`, ['user']);
+    const { rows } = await pool.query(
+      `SELECT * FROM JOIN courses ON users.courseId = courses.id JOIN mentors ON users.mentorId = mentors.id users WHERE firstname ILIKE '%${query}%' AND role = $1;`,
+      ['user'],
+    );
     return toCamelCase(rows);
   }
-  static async findByCategories(course, mentor, paymentstatus, dateFrom, dateTo) {
-    const { rows } = await pool.query('SELECT * FROM users WHERE course = $1, mentor = $2, paymentstatus = $3, date BETWEEN $4 AND $5;', [
-      course,
-      mentor,
-      paymentstatus,
-      dateFrom,
-      dateTo,
-    ]);
+  static async findByCategories(courseId, mentorId, paymentstatus, dateFrom, dateTo) {
+    const { rows } = await pool.query(
+      'SELECT * FROM users JOIN courses ON users.courseId = courses.id JOIN mentors ON users.mentorId = mentors.id WHERE course = $1, mentor = $2, paymentstatus = $3, date BETWEEN $4 AND $5;',
+      [courseId, mentorId, paymentstatus, dateFrom, dateTo],
+    );
     return toCamelCase(rows);
   }
 
   static async insertUsersByHistory(
     firstname,
     lastname,
-    course,
-    mentor,
+    courseId,
+    mentorId,
     date,
     login,
     password,
@@ -87,12 +96,12 @@ class UserRepo {
     history,
   ) {
     await pool.query(
-      'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, phoneNumber, paymentStatus, paymentCashUrl, paymentByCash, role, history) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)',
+      'INSERT INTO users(firstname, lastname, courseId, mentorId, date, login, password, phoneNumber, paymentStatus, paymentCashUrl, paymentByCash, role, history) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)',
       [
         firstname,
         lastname,
-        course,
-        mentor,
+        courseId,
+        mentorId,
         date,
         login,
         password,

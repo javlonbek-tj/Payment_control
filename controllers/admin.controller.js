@@ -7,19 +7,25 @@ const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const AppError = require('../services/AppError');
+const CourseRepo = require('../repos/course-repo');
+const MentorRepo = require('../repos/mentor-repo');
 
-const getAddUser = (req, res, next) => {
+const getAddUser = async (req, res, next) => {
   try {
+    const courses = await CourseRepo.find();
+    const mentors = await MentorRepo.find();
     res.render('admin/addUser', {
       pageTitle: "Ro'yxatga olish",
       update: null,
       error: null,
       errorMessage: null,
+      courses,
+      mentors,
       student: {
         firstname: '',
         lastname: '',
-        course: '',
-        mentor: '',
+        courseId: '',
+        mentorId: '',
         date: '',
         login: '',
         password: '',
@@ -31,10 +37,36 @@ const getAddUser = (req, res, next) => {
   }
 };
 
+const getAddCourse = async (req, res, next) => {
+  try {
+    const courses = await CourseRepo.find();
+    res.render('admin/addCourse', {
+      pageTitle: `Kurs qo'shish`,
+      errorMessage: null,
+      courses,
+    });
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
+const getAddMentor = async (req, res, next) => {
+  try {
+    const mentors = await MentorRepo.find();
+    res.render('admin/addMentor', {
+      pageTitle: `Mentor qo'shish`,
+      errorMessage: null,
+      mentors,
+    });
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
 const postAddUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    const { firstname, lastname, course, mentor, login, password, isAdmin } = req.body;
+    const { firstname, lastname, courseId, mentorId, login, password, isAdmin } = req.body;
     const phoneNumber = password;
     let { date } = req.body;
     if (!errors.isEmpty()) {
@@ -46,8 +78,8 @@ const postAddUser = async (req, res, next) => {
         student: {
           firstname,
           lastname,
-          course,
-          mentor,
+          courseId,
+          mentorId,
           date,
           login,
           password,
@@ -68,8 +100,8 @@ const postAddUser = async (req, res, next) => {
         student: {
           firstname,
           lastname,
-          course,
-          mentor,
+          courseId,
+          mentorId,
           date,
           login,
           password,
@@ -79,29 +111,9 @@ const postAddUser = async (req, res, next) => {
     }
     const hashedpassword = await bcrypt.hash(password, 12);
     if (isAdmin === 'admin') {
-      await UserRepo.insert(
-        firstname,
-        lastname,
-        course,
-        mentor,
-        date,
-        login,
-        hashedpassword,
-        phoneNumber,
-        'admin',
-      );
+      await UserRepo.insert(firstname, lastname, courseId, mentorId, date, login, hashedpassword, phoneNumber, 'admin');
     } else {
-      await UserRepo.insert(
-        firstname,
-        lastname,
-        course,
-        mentor,
-        date,
-        login,
-        hashedpassword,
-        phoneNumber,
-        'user',
-      );
+      await UserRepo.insert(firstname, lastname, courseId, mentorId, date, login, hashedpassword, phoneNumber, 'user');
     }
     res.redirect('/');
   } catch (err) {
@@ -131,7 +143,7 @@ const getUpdateUser = async (req, res, next) => {
 const postUpdateUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    const { userId, firstname, lastname, course, mentor, login, password } = req.body;
+    const { userId, firstname, lastname, courseId, mentorId, login, password } = req.body;
     const phoneNumber = password;
     const oldUser = await UserRepo.findById(userId);
     if (!oldUser) {
@@ -146,8 +158,8 @@ const postUpdateUser = async (req, res, next) => {
         student: {
           firstname,
           lastname,
-          course,
-          mentor,
+          courseId,
+          mentorId,
           login,
           password,
         },
@@ -155,8 +167,8 @@ const postUpdateUser = async (req, res, next) => {
     }
     const oldFirstname = oldUser.firstname;
     const oldLastname = oldUser.lastname;
-    const oldCourse = oldUser.course;
-    const oldMentor = oldUser.mentor;
+    const oldCourse = oldUser.courseId;
+    const oldMentor = oldUser.mentorId;
     const oldlogin = oldUser.login;
     const oldpassword = oldUser.password;
     const oldPhoneNumber = oldUser.phoneNumber;
@@ -168,8 +180,8 @@ const postUpdateUser = async (req, res, next) => {
       userId,
       firstname ? firstname : oldFirstname,
       lastname ? lastname : oldLastname,
-      course ? course : oldCourse,
-      mentor ? mentor : oldMentor,
+      courseId ? courseId : oldCourse,
+      mentorId ? mentorId : oldMentor,
       login ? login : oldlogin,
       password ? hashedpassword : oldpassword,
       password ? phoneNumber : oldPhoneNumber,
@@ -236,10 +248,7 @@ const rejectPayment = async (req, res, next) => {
     await RejectedCashesRepo.insert(user.paymentcashurl, userId);
     await MessageRepo.deleteById(messageId);
     const month = getMonth(user.date);
-    await MessageRepo.insert(
-      `Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}.`,
-      req.user.id,
-    );
+    await MessageRepo.insert(`Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}.`, req.user.id);
     res.redirect('/');
   } catch (err) {
     next(new AppError(err, 500));
@@ -270,10 +279,7 @@ const getUsersExcel = async (req, res, next) => {
     worksheet.getRow(1).eachCell(cell => {
       cell.font = { bold: true };
     });
-    res.setHeader(
-      'Content-Type',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    );
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename=users.xlsx`);
 
     return workbook.xlsx.write(res).then(() => {
@@ -311,4 +317,6 @@ module.exports = {
   rejectPayment,
   getUsersExcel,
   getRejectedCashes,
+  getAddCourse,
+  getAddMentor,
 };

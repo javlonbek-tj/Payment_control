@@ -4,23 +4,20 @@ const toCamelCase = require('./utils/to-camel-case');
 class MessageRepo {
   static async findAllWithoutMe(id) {
     const { rows } = await pool.query(
-      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE userId != $1 ORDER BY users.created_at;',
+      'SELECT * FROM users JOIN messages ON users.id = messages.userId JOIN courses ON users.courseId = courses.id JOIN mentors ON users.mentorId = mentors.id WHERE userId != $1 ORDER BY users.created_at;',
       [id],
     );
     return toCamelCase(rows);
   }
   static async findUnreadMessages(id) {
     const { rows } = await pool.query(
-      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE userId != $1 AND read = false',
+      'SELECT * FROM users JOIN courses ON users.courseId = courses.id JOIN mentors ON users.mentorId = mentors.id JOIN messages ON users.id = messages.userId WHERE userId != $1 AND read = false',
       [id],
     );
     return toCamelCase(rows);
   }
   static async insert(text, userId) {
-    const { rows } = await pool.query(
-      'INSERT INTO messages(message, userId) VALUES ($1, $2) RETURNING *;',
-      [text, userId],
-    );
+    const { rows } = await pool.query('INSERT INTO messages(message, userId) VALUES ($1, $2) RETURNING *;', [text, userId]);
     return toCamelCase(rows)[0];
   }
   static async deleteById(id) {

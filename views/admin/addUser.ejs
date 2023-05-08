@@ -42,20 +42,18 @@
             <label for="course"><i class="fa-solid fa-book me-4 fs-5"></i></label>
           <select name="course">
             <option <%= (update || error && student.course) ? '' : 'selected' %> disabled>Kursni tanlang</option>
-            <option value="Matematika" <%= (student.course === 'Matematika') ? 'selected' : '' %>>Matematika</option>
-            <option value="Ingliz tili" <%= (student.course === 'Ingliz tili') ? 'selected' : '' %>>Ingliz tili</option>
-            <option value="Fizika" <%= (student.course === 'Fizika') ? 'selected' : '' %>>Fizika</option>
-            <option value="Kimyo" <%= (student.course === 'Kimyo') ? 'selected' : '' %>>Kimyo</option>
+            <% for(let course of courses) {%>
+            <option value="<% course.id %>" <%= (student.courseId.name === course.name) ? 'selected' : '' %>><%= course.name %></option>
+            <% } %> 
           </select>
         </div>
         <div class="form-group mb-5">
             <label for="mentor"><i class="fa-solid fa-person-chalkboard me-4 fs-5"></i></label>
           <select name="mentor">
             <option <%= (update || error && student.mentor) ? '' : 'selected' %> disabled>O'qituvchini tanlang</option>
-            <option value="Raximov Alisher" <%= (student.mentor === 'Raximov Alisher') ? 'selected' : '' %>>Raximov Alisher</option>
-            <option value="Qodirov Nodir" <%= (student.mentor === 'Qodirov Nodir') ? 'selected' : '' %>>Qodirov Nodir</option>
-            <option value="Fozilov Kozim" <%= (student.mentor === 'Fozilov Kozim') ? 'selected' : '' %>>Fozilov Kozim</option>
-            <option value="Sattorov Tolib" <%= (student.mentor === 'Sattorov Tolib') ? 'selected' : '' %>>Sattorov Tolib</option>
+            <% for(let mentor of mentors) {%>
+              <option value="<% mentor.id %>" <%= (student.mentorId.name === mentor.name) ? 'selected' : '' %>><%= mentor.name %></option>
+              <% } %> 
           </select>
         </div>
         <% if(!update) {%>

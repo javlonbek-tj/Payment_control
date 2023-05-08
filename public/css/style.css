@@ -48,6 +48,9 @@ section {
 .mbb {
   margin-bottom: 15rem;
 }
+.mbs {
+  margin-bottom: 20px;
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
