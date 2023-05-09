@@ -14,6 +14,10 @@ class MentorRepo {
     const { rows } = await pool.query('SELECT * FROM mentors WHERE name = $1;', [name]);
     return rows;
   }
+
+  static async deleteMentor(id) {
+    await pool.query('DELETE FROM mentors WHERE id=$1', [id]);
+  }
 }
 
 module.exports = MentorRepo;

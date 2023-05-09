@@ -1,6 +1,6 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { getMonth, formatData } = require('../repos/utils/formatData');
+const { getMonth, formatData, getPrevMonthDate } = require('../repos/utils/formatData');
 const { filteredUsers } = require('./user.controller');
 const excelJS = require('exceljs');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
@@ -9,6 +9,7 @@ const bcrypt = require('bcryptjs');
 const AppError = require('../services/AppError');
 const CourseRepo = require('../repos/course-repo');
 const MentorRepo = require('../repos/mentor-repo');
+const LoadHomePage = require('../repos/utils/homePageLoads');
 
 const getAddUser = async (req, res, next) => {
   try {
@@ -332,11 +333,13 @@ const getUsersExcel = async (req, res, next) => {
       { header: "To'lov holati", key: 'paymentstatus', width: 10 },
     ];
     let counter = 1;
-    filteredUsers[0].forEach(user => {
-      user.id = counter;
-      worksheet.addRow(user); // Add data in worksheet
-      counter++;
-    });
+    if (filteredUsers.length > 0) {
+      filteredUsers[0].forEach(user => {
+        user.id = counter;
+        worksheet.addRow(user); // Add data in worksheet
+        counter++;
+      });
+    }
     // Making first line in excel bold
     worksheet.getRow(1).eachCell(cell => {
       cell.font = { bold: true };
@@ -367,6 +370,47 @@ const getRejectedCashes = async (req, res, next) => {
   }
 };
 
+const postDeleteMentor = async (req, res, next) => {
+  try {
+    const { mentorId } = req.body;
+    await MentorRepo.deleteMentor(mentorId);
+    res.redirect('/admin/addMentor');
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
+const postDeleteCourse = async (req, res, next) => {
+  try {
+    const { courseId } = req.body;
+    await CourseRepo.deleteCourse(courseId);
+    res.redirect('/admin/addCourse');
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
+const historyUsers = async (req, res, next) => {
+  try {
+    const users = await UserRepo.find();
+    const courses = await LoadHomePage.allCourses();
+    const mentors = await LoadHomePage.allMentors();
+    const unreadMessages = await LoadHomePage.unreadMessages(req.user.id);
+    const prevMonth = getMonth(getPrevMonthDate());
+    res.render('home', {
+      pageTitle: `Barcha o'quvchilar`,
+      users,
+      courseName: `Barcha o'quvchilar(oylar bo'yicha)`,
+      courses,
+      mentors,
+      prevMonth,
+      unreadMessages,
+    });
+  } catch (err) {
+    next(new AppError(err, 500));
+  }
+};
+
 module.exports = {
   getAddUser,
   postAddUser,
@@ -383,4 +427,7 @@ module.exports = {
   postAddCourse,
   getAddMentor,
   postAddMentor,
+  postDeleteMentor,
+  postDeleteCourse,
+  historyUsers,
 };

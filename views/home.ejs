@@ -14,7 +14,7 @@
       <nav>
         <ul>
           <li>
-            <a href="#" class="admin">
+            <a href="/users/<%= user.id %>" class="admin">
               <img
                 src="<%= (user.role === 'admin') ? '/image/admin_image.png' : '/image/commentUser.png' %>"
               />
@@ -108,10 +108,9 @@
               <div class="filtering">
                 <select name="course" id="course">
                   <option selected disabled>Kursni tanlang</option>
-                  <option value="Matematika">Matematika</option>
-                  <option value="Ingliz tili">Ingliz tili</option>
-                  <option value="Fizika">Fizika</option>
-                  <option value="Kimyo">Kimyo</option>
+                  <% for(let course of courses) { %>
+                  <option value="<%= course.name %>"><%= course.name %></option>
+                  <% } %>
                 </select>
               </div>
               <div class="filtering">
@@ -126,10 +125,9 @@
               <div class="filtering">
                 <select name="mentor" id="mentor">
                   <option selected disabled>Mentor</option>
-                  <option value="Raximov Alisher">Raximov Alisher</option>
-                  <option value="Qodirov Nodir">Qodirov Nodir</option>
-                  <option value="Fozilov Kozim">Fozilov Kozim</option>
-                  <option value="Sattorov Tolib">Sattorov Tolib</option>
+                  <% for(let mentor of mentors) { %>
+                    <option value="<%= mentor.name %>"><%= mentor.name %></option>
+                    <% } %>
                 </select>
               </div>
               <div class="filtering">
@@ -145,7 +143,8 @@
                 <button type="submit">Qidirish</button>
               </div>
               <% if(user.role === 'admin') {%>
-              <div class="filtering">
+              <div class="filtering history">
+                <a href="/admin/history">History</a>
                 <a href="/admin/downloadExcel">Excel</a>
               </div>
               <% } else { %>

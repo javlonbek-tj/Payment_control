@@ -270,6 +270,7 @@ table thead tr {
 .filtering a {
   cursor: pointer;
   transition: 0.5s;
+  margin-right: 5px;
 }
 .filtering input:hover,
 .filtering select:hover {
@@ -278,6 +279,9 @@ table thead tr {
 .filtering button:hover,
 .filtering a:hover {
   background-color: #ddd;
+}
+.history {
+  display: flex;
 }
 
 @media (max-width: 1100px) {

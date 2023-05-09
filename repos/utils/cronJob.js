@@ -2,7 +2,6 @@ const CronJob = require('cron').CronJob;
 const UserRepo = require('../../repos/user-repo');
 
 const job = new CronJob('0 0 1 * *', async function () {
-  console.log(1);
   const allNewUsers = await UserRepo.findAllUniqueUsers();
   allNewUsers.forEach(user => {
     UserRepo.insertUsersByHistory(

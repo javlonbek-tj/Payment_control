@@ -13,6 +13,10 @@ class CourseRepo {
     const { rows } = await pool.query('SELECT * FROM courses WHERE name = $1;', [name]);
     return rows;
   }
+
+  static async deleteCourse(id) {
+    await pool.query('DELETE FROM courses WHERE id=$1', [id]);
+  }
 }
 
 module.exports = CourseRepo;

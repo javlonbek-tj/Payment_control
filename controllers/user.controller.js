@@ -7,6 +7,8 @@ const AppError = require('../services/AppError');
 const UsersByCourse = require('../repos/utils/usersByCourse');
 const job = require('../repos/utils/cronJob');
 const CourseRepo = require('../repos/course-repo');
+const MentorRepo = require('../repos/mentor-repo');
+const LoadHomePage = require('../repos/utils/homePageLoads');
 
 // Execute cron  job
 job.start();
@@ -32,22 +34,9 @@ const getAllUsers = async (req, res, next) => {
       filteredUsers.pop();
       filteredUsers.push(users);
     }
-    const allUsers = await UserRepo.find();
-    const courses = await CourseRepo.find();
-    courses.map(course => {
-      course.courseAllUsers = UsersByCourse.usersByCourse(allUsers, course.name);
-      course.coursePaidUsers = UsersByCourse.paidUsers(allUsers, course.name, getPrevMonthDate().getMonth());
-      return course;
-    });
-    /* const mathUsers = UsersByCourse.usersByCourse(allUsers, 'Matematika');
-    const mathPaidUsers = UsersByCourse.paidUsers(allUsers, 'Matematika', getPrevMonthDate().getMonth());
-    const englishUsers = UsersByCourse.usersByCourse(allUsers, 'Ingliz tili');
-    const englishPaidUsers = UsersByCourse.paidUsers(allUsers, 'Ingliz tili', getPrevMonthDate().getMonth());
-    const physicsUsers = UsersByCourse.usersByCourse(allUsers, 'Fizika');
-    const physicsPaidUsers = UsersByCourse.paidUsers(allUsers, 'Fizika', getPrevMonthDate().getMonth());
-    const chemistryUsers = UsersByCourse.usersByCourse(allUsers, 'Kimyo');
-    const chemistryPaidUsers = UsersByCourse.paidUsers(allUsers, 'Kimyo', getPrevMonthDate().getMonth()); */
-    const unreadMessages = await MessageRepo.findUnreadMessages(req.user.id);
+    const courses = await LoadHomePage.allCourses();
+    const mentors = await LoadHomePage.allMentors();
+    const unreadMessages = await LoadHomePage.unreadMessages(req.user.id);
     const prevMonth = getMonth(getPrevMonthDate());
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
@@ -55,14 +44,7 @@ const getAllUsers = async (req, res, next) => {
       unreadMessages,
       courseName,
       courses,
-      /* mathUsers,
-      englishUsers,
-      physicsUsers,
-      chemistryUsers,
-      mathPaidUsers,
-      englishPaidUsers,
-      physicsPaidUsers,
-      chemistryPaidUsers, */
+      mentors,
       prevMonth,
     });
   } catch (err) {
