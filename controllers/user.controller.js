@@ -4,10 +4,7 @@ const { formatData, getMonth, getPrevMonthDate } = require('../repos/utils/forma
 const findByCategories = require('../repos/utils/filtering');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 const AppError = require('../services/AppError');
-const UsersByCourse = require('../repos/utils/usersByCourse');
 const job = require('../repos/utils/cronJob');
-const CourseRepo = require('../repos/course-repo');
-const MentorRepo = require('../repos/mentor-repo');
 const LoadHomePage = require('../repos/utils/homePageLoads');
 
 // Execute cron  job
@@ -97,8 +94,8 @@ const postPayment = async (req, res, next) => {
     const pdfCashUrl = req.file.path;
     await UserRepo.uploadCash(pdfCashUrl, userId);
     const user = await UserRepo.changePaymentStatusToProgress(userId);
-    const month = getMonth(user.date);
-    await MessageRepo.insert(`${user.firstname} ${month} oyi uchun to'lovni amalga oshirdi`, userId);
+    const month = getMonth(user[0].date);
+    await MessageRepo.insert(`${user[0].firstname} ${month} oyi uchun to'lovni amalga oshirdi`, userId);
     res.redirect('/');
   } catch (err) {
     next(new AppError(err, 500));

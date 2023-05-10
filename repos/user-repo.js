@@ -33,21 +33,23 @@ class UserRepo {
   }
 
   static async isUserExists(login) {
-    const { rows } = await pool.query('SELECT * FROM users WHERE login = $1', [login]);
+    const { rows } = await pool.query('SELECT * FROM users WHERE login = $1 RETURNING *;', [login]);
     return toCamelCase(rows)[0];
   }
 
   static async changePaymentStatusToProgress(userId) {
-    await pool.query(`UPDATE users SET paymentstatus = 'in progress' WHERE id = $1;`, [userId]);
+    const { rows } = await pool.query(`UPDATE users SET paymentStatus = 'in progress' WHERE id = $1 RETURNING *;`, [userId]);
+    return toCamelCase(rows)[0];
   }
   static async changePaymentStatusToPaid(userId) {
-    await pool.query(`UPDATE users SET paymentstatus = 'paid' WHERE id = $1;`, [userId]);
+    await pool.query(`UPDATE users SET paymentStatus = 'paid' WHERE id = $1;`, [userId]);
   }
   static async paidByCash(userId) {
     await pool.query(`UPDATE users SET paymentByCash = true WHERE id = $1;`, [userId]);
   }
   static async changePaymentStatusToRejected(userId) {
-    await pool.query(`UPDATE users SET paymentstatus = 'rejected' WHERE id = $1`, [userId]);
+    const { rows } = await pool.query(`UPDATE users SET paymentStatus = 'rejected' WHERE id = $1 RETURNING *;`, [userId]);
+    return toCamelCase(rows)[0];
   }
 
   static async uploadCash(pdf, userId) {
@@ -61,7 +63,7 @@ class UserRepo {
     return toCamelCase(rows);
   }
   static async findByCategories(course, mentor, paymentstatus, dateFrom, dateTo) {
-    const { rows } = await pool.query('SELECT * FROM users  WHERE course = $1, mentor = $2, paymentstatus = $3, date BETWEEN $4 AND $5;', [
+    const { rows } = await pool.query('SELECT * FROM users  WHERE course = $1, mentor = $2, paymentStatus = $3, date BETWEEN $4 AND $5;', [
       course,
       mentor,
       paymentstatus,
@@ -87,7 +89,7 @@ class UserRepo {
     history,
   ) {
     await pool.query(
-      'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, phoneNumber, paymentStatus, paymentCashUrl, paymentByCash, role, history) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)',
+      'INSERT INTO users(firstname, lastname, course, mentor, date, login, password, phoneNumber, paymentStatus, paymentcashurl, paymentbycash, role, history) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)',
       [
         firstname,
         lastname,

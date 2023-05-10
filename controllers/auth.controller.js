@@ -27,7 +27,8 @@ const getLogin = async (req, res, next) => {
 
 const postLogin = async (req, res, next) => {
   try {
-    const { login, password } = req.body;
+    let { login, password } = req.body;
+    login = login.toLowerCase();
     const user = await UserRepo.isUserExists(login);
     if (!user) {
       return res.redirect('/login');

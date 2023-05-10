@@ -27,11 +27,11 @@ const {
 } = require('../controllers/admin.controller');
 
 router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
-router.get('/addUser', isAuth, restrictTo('admin'), getAddUser);
-router.get('/addCourse', isAuth, restrictTo('admin'), getAddCourse);
-router.post('/addCourse', isAuth, restrictTo('admin'), [check('name', 'Kurs nomi kiritilmadi').trim().not().isEmpty()], postAddCourse);
-router.get('/addMentor', isAuth, restrictTo('admin'), getAddMentor);
-router.post('/addMentor', isAuth, restrictTo('admin'), [check('name', 'Mentor ismi kiritilmadi').trim().not().isEmpty()], postAddMentor);
+router.get('/addUser', getAddUser);
+router.get('/addCourse', getAddCourse);
+router.post('/addCourse', [check('name', 'Kurs nomi kiritilmadi').trim().not().isEmpty()], postAddCourse);
+router.get('/addMentor', getAddMentor);
+router.post('/addMentor', [check('name', 'Mentor ismi kiritilmadi').trim().not().isEmpty()], postAddMentor);
 router.post('/deleteMentor', isAuth, restrictTo('admin'), postDeleteMentor);
 router.post('/deleteCourse', isAuth, restrictTo('admin'), postDeleteCourse);
 router.post(
@@ -56,8 +56,6 @@ router.post(
       .isLength(9)
       .withMessage("Parol 9 ta belgidan iborat bo'lishi kerak"),
   ],
-  isAuth,
-  restrictTo('admin'),
   postAddUser,
 );
 router.get('/:userId/changeUserInfo', isAuth, restrictTo('admin'), getUpdateUser);

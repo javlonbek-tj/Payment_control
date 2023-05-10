@@ -1,9 +1,11 @@
 const CronJob = require('cron').CronJob;
 const UserRepo = require('../../repos/user-repo');
+const bcrypt = require('bcryptjs');
 
 const job = new CronJob('0 0 1 * *', async function () {
   const allNewUsers = await UserRepo.findAllUniqueUsers();
-  allNewUsers.forEach(user => {
+  await allNewUsers.forEach(async user => {
+    const hashedpassword = await bcrypt.hash(user.phonenumber, 12);
     UserRepo.insertUsersByHistory(
       user.firstname,
       user.lastname,
@@ -11,7 +13,7 @@ const job = new CronJob('0 0 1 * *', async function () {
       user.mentor,
       user.date,
       user.login,
-      user.phonenumber,
+      hashedpassword,
       user.phonenumber,
       user.paymentstatus,
       user.paymentcashurl,

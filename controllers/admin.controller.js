@@ -127,9 +127,10 @@ const postAddUser = async (req, res, next) => {
     const courses = await CourseRepo.find();
     const mentors = await MentorRepo.find();
     const errors = validationResult(req);
-    const { firstname, lastname, course, mentor, login, password, isAdmin } = req.body;
+    const { firstname, lastname, course, mentor, password, isAdmin } = req.body;
     const phoneNumber = password;
-    let { date } = req.body;
+    let { date, login } = req.body;
+    login = login.toLowerCase();
     if (!errors.isEmpty()) {
       return res.status(422).render('admin/addUser', {
         pageTitle: "Ro'yxatga olish",
@@ -206,7 +207,8 @@ const getUpdateUser = async (req, res, next) => {
 const postUpdateUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    const { userId, firstname, lastname, course, mentor, login, password } = req.body;
+    let { userId, firstname, lastname, course, mentor, login, password } = req.body;
+    login = login.toLowerCase();
     const phoneNumber = password;
     const oldUser = await UserRepo.findById(userId);
     if (!oldUser) {
