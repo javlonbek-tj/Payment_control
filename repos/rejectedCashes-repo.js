@@ -3,7 +3,9 @@ const toCamelCase = require('./utils/to-camel-case');
 
 class RejectedCashesRepo {
   static async find() {
-    const { rows } = await pool.query('SELECT * FROM rejectedCashes;');
+    const { rows } = await pool.query(
+      'SELECT * FROM rejectedCashes JOIN users ON users.id = rejectedCashes.userId ORDER BY rejectedCashes.created_at DESC;',
+    );
     return toCamelCase(rows);
   }
   static async insert(paymentCashUrl, userId) {

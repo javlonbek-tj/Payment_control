@@ -96,14 +96,14 @@
                         <% if(student.paymentbycash) {%>
                         <p class="text-muted fs-4">Naqd pul orqali to'landi</p>
                         <% } %> <% if(student.paymentcashurl) {%>
-                        <a href="./<%= student.paymentcashurl%>" class="fs-4">PDF</a>
+                        <a href="/<%= student.paymentcashurl%>" class="fs-4">PDF</a>
                         <% } %>
                       </div>
                       <% } %> <% if(student.paymentstatus === "Rad etilgan") {%>
                       <div class="mb-5 d-flex justify-content-between">
                         <h4>Rad etilgan to'lov cheki:</h4>
                         <% for(let cash of rejectedCash) {%>
-                        <a href="./<%= cash.paymentcashurl%>" class="fs-4">pdf</a>
+                        <a href="/<%= cash.paymentcashurl%>" class="fs-4">pdf</a>
                         <% } %>
                       </div>
                       <% } %>

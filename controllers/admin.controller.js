@@ -331,7 +331,7 @@ const getUsersExcel = async (req, res, next) => {
       { header: 'Sharif', key: 'lastname', width: 10 },
       { header: 'Kurs', key: 'course', width: 10 },
       { header: 'Mentor', key: 'mentor', width: 10 },
-      { header: 'Telefon raqami', key: 'password', width: 10 },
+      { header: 'Telefon raqami', key: 'phonenumber', width: 10 },
       { header: "To'lov holati", key: 'paymentstatus', width: 10 },
     ];
     let counter = 1;
@@ -392,27 +392,6 @@ const postDeleteCourse = async (req, res, next) => {
   }
 };
 
-const historyUsers = async (req, res, next) => {
-  try {
-    const users = await UserRepo.find();
-    const courses = await LoadHomePage.allCourses();
-    const mentors = await LoadHomePage.allMentors();
-    const unreadMessages = await LoadHomePage.unreadMessages(req.user.id);
-    const prevMonth = getMonth(getPrevMonthDate());
-    res.render('home', {
-      pageTitle: `Barcha o'quvchilar`,
-      users,
-      courseName: `Barcha o'quvchilar(oylar bo'yicha)`,
-      courses,
-      mentors,
-      prevMonth,
-      unreadMessages,
-    });
-  } catch (err) {
-    next(new AppError(err, 500));
-  }
-};
-
 module.exports = {
   getAddUser,
   postAddUser,
@@ -431,5 +410,4 @@ module.exports = {
   postAddMentor,
   postDeleteMentor,
   postDeleteCourse,
-  historyUsers,
 };

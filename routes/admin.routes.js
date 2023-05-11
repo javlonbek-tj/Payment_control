@@ -23,7 +23,6 @@ const {
   getRejectedCashes,
   postDeleteMentor,
   postDeleteCourse,
-  historyUsers,
 } = require('../controllers/admin.controller');
 
 router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
@@ -78,6 +77,5 @@ router.post('/payByCash', isAuth, restrictTo('admin'), payByCash);
 router.post('/rejectPayment', isAuth, restrictTo('admin'), rejectPayment);
 router.get('/downloadExcel', isAuth, restrictTo('admin'), getUsersExcel);
 router.get('/rejectedCashes', isAuth, restrictTo('admin'), getRejectedCashes);
-router.get('/history', isAuth, restrictTo('admin'), historyUsers);
 
 module.exports = router;

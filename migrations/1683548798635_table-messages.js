@@ -6,6 +6,8 @@ exports.up = pgm => {
   pgm.sql(`
     CREATE TABLE messages (
         id SERIAL PRIMARY KEY,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         message VARCHAR(200) NOT NULL,
         userId BIGINT REFERENCES users(id),
         read BOOLEAN DEFAULT false

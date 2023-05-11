@@ -17,7 +17,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/cashes', express.static(path.join(__dirname, 'cashes')));
+app.use('/cashes', express.static(path.join(__dirname, '/cashes')));
 app.use(upload.single('cash'));
 
 app.use(express.json());

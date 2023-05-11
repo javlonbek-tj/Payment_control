@@ -117,7 +117,7 @@
                 <select name="paymentstatus" id="paymentstatus">
                   <option selected disabled>To'lov holati</option>
                   <option value="paid">To'langan</option>
-                  <option value="in progess">Jarayonda</option>
+                  <option value="in progress">Jarayonda</option>
                   <option value="not paid">To'lanmagan</option>
                   <option value="rejected">Rad etilgan</option>
                 </select>
@@ -140,18 +140,19 @@
                 <input type="text" placeholder="Izlash..." name="search" />
               </div>
               <div class="filtering">
-                <button type="submit">Qidirish</button>
+                <select name="history" id="history">
+                  <option value="currentMonth" selected>Joriy oy</option>
+                  <option value="historyMonth">O'tgan oylar</option>
+                </select>
               </div>
-              <% if(user.role === 'admin') {%>
               <div class="filtering history">
-                <a href="/admin/history">History</a>
+                <button type="submit">Qidirish</button>
+                <% if(user.role === 'admin') {%>
                 <a href="/admin/downloadExcel">Excel</a>
-              </div>
-              <% } else { %>
-              <div class="filtering">
+                <% } else { %>
                 <a href="/"><i class="fa-solid fa-arrows-rotate"></i></a>
+                  <% } %>
               </div>
-              <% } %>
             </form>
           </section>
           <div class="attendance-list">

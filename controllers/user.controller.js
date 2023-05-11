@@ -18,9 +18,23 @@ const getAllUsers = async (req, res, next) => {
     if (req.query.search) {
       const { search } = req.query;
       users = await UserRepo.findPartial(search);
-    } else if (req.query.course || req.query.mentor || req.query.paymentstatus || req.query.dateFrom || req.query.dateTo) {
-      let { course, mentor, paymentstatus, dateFrom, dateTo } = req.query;
-      users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo);
+    } else if (
+      req.query.course ||
+      req.query.mentor ||
+      req.query.paymentstatus ||
+      req.query.dateFrom ||
+      req.query.dateTo ||
+      req.query.history
+    ) {
+      let { course, mentor, paymentstatus, dateFrom, dateTo, history } = req.query;
+      console.log(req.query);
+      if (history === 'currentMonth') {
+        history = 'false';
+      }
+      if (history === 'historyMonth') {
+        history = 'true';
+      }
+      users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo, history);
       courseName = course;
     } else {
       users = await UserRepo.findAllUniqueUsers();
@@ -94,8 +108,8 @@ const postPayment = async (req, res, next) => {
     const pdfCashUrl = req.file.path;
     await UserRepo.uploadCash(pdfCashUrl, userId);
     const user = await UserRepo.changePaymentStatusToProgress(userId);
-    const month = getMonth(user[0].date);
-    await MessageRepo.insert(`${user[0].firstname} ${month} oyi uchun to'lovni amalga oshirdi`, userId);
+    const month = getMonth(user.date);
+    await MessageRepo.insert(`${user.firstname} ${month} oyi uchun to'lovni amalga oshirdi`, userId);
     res.redirect('/');
   } catch (err) {
     next(new AppError(err, 500));

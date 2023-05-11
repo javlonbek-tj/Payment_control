@@ -4,7 +4,7 @@ const toCamelCase = require('./utils/to-camel-case');
 class MessageRepo {
   static async findAllWithoutMe(id) {
     const { rows } = await pool.query(
-      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE userId != $1 ORDER BY users.created_at;',
+      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE userId != $1 ORDER BY messages.created_at DESC;',
       [id],
     );
     return toCamelCase(rows);
