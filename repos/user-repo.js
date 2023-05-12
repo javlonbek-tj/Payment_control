@@ -57,7 +57,10 @@ class UserRepo {
     await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2 RETURNING *;`, [null, userId]);
   }
   static async findPartial(query) {
-    const { rows } = await pool.query(`SELECT * FROM  users WHERE firstname ILIKE '%${query}%' AND role = $1;`, ['user']);
+    const { rows } = await pool.query('SELECT * FROM users WHERE firstname ILIKE $1 OR lastname ILIKE $1 AND role = $2;', [
+      `%${query}%`,
+      'user',
+    ]);
     return toCamelCase(rows);
   }
 

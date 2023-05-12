@@ -24,7 +24,7 @@
             </a>
           </li>
           <li>
-            <a href="<%= (user.role === 'admin') ? '/admin/addUser' : '/user.id/info'%>">
+            <a href="<%= (user.role === 'admin') ? '/admin/addUser' : '/users/' + user.id%>">
               <i class="<%= (user.role === 'admin') ? 'fas fa-user-plus' : 'fas fa-user'%>"></i>
               <span class="nav-item"
                 ><%= (user.role === 'admin') ? "O'quvchi qo'shish" : "Ma'lumotlarim"%></span

@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -20,26 +17,22 @@
   <body>
     <div class="container mts d-flex justify-content-center">
       <div>
-        <div class="mb-5 fs-4">
-          <i class="fa-solid fa-backward text-warning me-2"></i> <a href="/">Orqaga</a>
-        </div>
+        <div class="mb-5 fs-4"><i class="fa-solid fa-backward text-warning me-2"></i> <a href="/">Orqaga</a></div>
         <% if(myMessages.length <= 0) {%>
         <h2>Xabarlar mavjud emas</h2>
         <% } else {%><% for(let myMessage of myMessages) {%>
         <div class="mb-5 d-flex align-items-center">
-          <img
-            class="me-4 rounded-circle"
-            src="/image/commentUser.png"
-            style="width: 40px; height: 40px"
-            ;
-            alt=""
-          />
+          <img class="me-4 rounded-circle" src="/image/commentUser.png" style="width: 40px; height: 40px" ; alt="" />
           <h4 class="mt-0"><%= myMessage.firstname %></h4>
         </div>
         <div class="ms-5 mb-4">
           <h4 class="text-danger mb-4"><%= myMessage.message %></h4>
           <p class="fs-4"><span class="text-muted"> O'qituvchi: </span><%= myMessage.mentor %></p>
           <p class="fs-4"><span class="text-muted"> Kurs: </span><%= myMessage.course %></p>
+          <% for(let cash of rejectedCash) {%>
+          <p class="fs-4"><span class="text-muted"> Chek: </span> <a href="/<%= cash.paymentcashurl%>" class="fs-4">PDF</a></p>
+
+          <% } %>
           <div class="d-flex align-items-center">
             <form action="/deleteMessage" method="POST" class="me-5">
               <input type="hidden" name="messageId" value="<%= myMessage.id %>" />

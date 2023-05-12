@@ -27,12 +27,14 @@ const getAllUsers = async (req, res, next) => {
       req.query.history
     ) {
       let { course, mentor, paymentstatus, dateFrom, dateTo, history } = req.query;
-      console.log(req.query);
       if (history === 'currentMonth') {
         history = 'false';
       }
       if (history === 'historyMonth') {
         history = 'true';
+      }
+      if (!history) {
+        history = 'false';
       }
       users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo, history);
       courseName = course;
@@ -121,9 +123,11 @@ const getUserMessages = async (req, res, next) => {
     const { userId } = req.params;
     const myMessages = await MessageRepo.findAllWithoutMe(req.user.id);
     await MessageRepo.makeMessagesRead(userId);
+    const rejectedCash = await RejectedCashesRepo.findById(userId);
     res.render('user/messages', {
       pageTitle: 'Xabarlar',
       myMessages,
+      rejectedCash,
     });
   } catch (err) {
     next(new AppError(err, 500));

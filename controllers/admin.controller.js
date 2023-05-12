@@ -1,6 +1,6 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { getMonth, formatData, getPrevMonthDate } = require('../repos/utils/formatData');
+const { getMonth, formatData } = require('../repos/utils/formatData');
 const { filteredUsers } = require('./user.controller');
 const excelJS = require('exceljs');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
@@ -9,7 +9,6 @@ const bcrypt = require('bcryptjs');
 const AppError = require('../services/AppError');
 const CourseRepo = require('../repos/course-repo');
 const MentorRepo = require('../repos/mentor-repo');
-const LoadHomePage = require('../repos/utils/homePageLoads');
 
 const getAddUser = async (req, res, next) => {
   try {
@@ -128,7 +127,7 @@ const postAddUser = async (req, res, next) => {
     const mentors = await MentorRepo.find();
     const errors = validationResult(req);
     const { firstname, lastname, course, mentor, password, isAdmin } = req.body;
-    const phoneNumber = password;
+    const phonenumber = password;
     let { date, login } = req.body;
     login = login.toLowerCase();
     if (!errors.isEmpty()) {
@@ -146,7 +145,7 @@ const postAddUser = async (req, res, next) => {
           mentor,
           date,
           login,
-          password,
+          phonenumber,
           isAdmin,
         },
       });
@@ -168,16 +167,16 @@ const postAddUser = async (req, res, next) => {
           mentor,
           date,
           login,
-          password,
+          phonenumber,
           isAdmin,
         },
       });
     }
     const hashedpassword = await bcrypt.hash(password, 12);
     if (isAdmin === 'admin') {
-      await UserRepo.insert(firstname, lastname, course, mentor, date, login, hashedpassword, phoneNumber, 'admin');
+      await UserRepo.insert(firstname, lastname, course, mentor, date, login, hashedpassword, phonenumber, 'admin');
     } else {
-      await UserRepo.insert(firstname, lastname, course, mentor, date, login, hashedpassword, phoneNumber, 'user');
+      await UserRepo.insert(firstname, lastname, course, mentor, date, login, hashedpassword, phonenumber, 'user');
     }
     res.redirect('/');
   } catch (err) {
@@ -188,6 +187,8 @@ const postAddUser = async (req, res, next) => {
 const getUpdateUser = async (req, res, next) => {
   try {
     const { userId } = req.params;
+    const courses = await CourseRepo.find();
+    const mentors = await MentorRepo.find();
     const user = await UserRepo.findById(userId);
     if (!user) {
       return res.status(400).json('User not found');
@@ -198,6 +199,8 @@ const getUpdateUser = async (req, res, next) => {
       update: true,
       error: null,
       errorMessage: '',
+      courses,
+      mentors,
     });
   } catch (err) {
     next(new AppError(err, 500));
@@ -207,9 +210,11 @@ const getUpdateUser = async (req, res, next) => {
 const postUpdateUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
+    const courses = await CourseRepo.find();
+    const mentors = await MentorRepo.find();
     let { userId, firstname, lastname, course, mentor, login, password } = req.body;
     login = login.toLowerCase();
-    const phoneNumber = password;
+    const phonenumber = password;
     const oldUser = await UserRepo.findById(userId);
     if (!oldUser) {
       return res.status(400).json('Ushbu foydalanuvchi topilmadi');
@@ -220,13 +225,16 @@ const postUpdateUser = async (req, res, next) => {
         update: true,
         error: true,
         errorMessage: errors.array()[0].msg,
+        courses,
+        mentors,
         student: {
+          id: userId,
           firstname,
           lastname,
           course,
           mentor,
           login,
-          password,
+          phonenumber,
         },
       });
     }
@@ -236,7 +244,7 @@ const postUpdateUser = async (req, res, next) => {
     const oldMentor = oldUser.mentor;
     const oldlogin = oldUser.login;
     const oldpassword = oldUser.password;
-    const oldPhoneNumber = oldUser.phoneNumber;
+    const oldPhoneNumber = oldUser.phonenumber;
     let hashedpassword;
     if (password) {
       hashedpassword = await bcrypt.hash(password, 12);
@@ -249,7 +257,7 @@ const postUpdateUser = async (req, res, next) => {
       mentor ? mentor : oldMentor,
       login ? login : oldlogin,
       password ? hashedpassword : oldpassword,
-      password ? phoneNumber : oldPhoneNumber,
+      password ? phonenumber : oldPhoneNumber,
     );
     res.redirect(`/users/${userId}`);
   } catch (err) {
