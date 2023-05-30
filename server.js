@@ -5,10 +5,11 @@ const database = process.env.PG_DATABASE;
 const password = process.env.PG_PASSWORD;
 const user = process.env.PG_USER;
 const PORT = process.env.PORT || 8000;
+const host = process.env.DB_HOST;
 
 pool
   .connect({
-    host: 'manny.db.elephantsql.com',
+    host,
     port: 5432,
     user,
     database,
