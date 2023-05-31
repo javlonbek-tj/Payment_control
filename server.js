@@ -1,9 +1,9 @@
 const app = require('./app');
 const pool = require('./pool');
 
-const database = process.env.PG_DATABASE;
-const password = process.env.PG_PASSWORD;
-const user = process.env.PG_USER;
+const database = process.env.DB_NAME;
+const password = process.env.DB_PASSWORD;
+const user = process.env.DB_USER;
 const PORT = process.env.PORT || 8000;
 const host = process.env.DB_HOST;
 
@@ -14,6 +14,9 @@ pool
     user,
     database,
     password,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   })
   .then(() => {
     app.listen(PORT, () => {
