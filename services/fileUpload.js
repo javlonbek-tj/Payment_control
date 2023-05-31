@@ -1,7 +1,10 @@
 const multer = require('multer');
+const { ensureDir } = require('fs-extra');
 
 const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: async (req, file, cb) => {
+    const destinationDir = 'cashes';
+    await ensureDir(destinationDir);
     cb(null, 'cashes');
   },
   filename: (req, file, cb) => {
