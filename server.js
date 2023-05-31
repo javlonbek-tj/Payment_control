@@ -14,9 +14,6 @@ pool
     user,
     database,
     password,
-    ssl: {
-      rejectUnauthorized: false,
-    },
   })
   .then(() => {
     app.listen(PORT, () => {
