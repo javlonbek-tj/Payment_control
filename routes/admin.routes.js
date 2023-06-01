@@ -55,8 +55,6 @@ router.post(
       .isLength(9)
       .withMessage("Parol 9 ta belgidan iborat bo'lishi kerak"),
   ],
-  isAuth,
-  restrictTo('admin'),
   postAddUser,
 );
 router.get('/:userId/changeUserInfo', isAuth, restrictTo('admin'), getUpdateUser);
@@ -84,6 +82,8 @@ router.post(
       .isLength(9)
       .withMessage("Parol 9 ta belgidan iborat bo'lishi kerak"),
   ],
+  isAuth,
+  restrictTo('admin'),
   postUpdateUser,
 );
 router.post('/deleteUser', isAuth, restrictTo('admin'), deleteUser);
