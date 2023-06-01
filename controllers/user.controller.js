@@ -121,7 +121,7 @@ const postPayment = async (req, res, next) => {
 const getUserMessages = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const myMessages = await MessageRepo.findAllWithoutMe(req.user.id);
+    const myMessages = await MessageRepo.findMyMessages(req.user.id);
     await MessageRepo.makeMessagesRead(userId);
     const rejectedCash = await RejectedCashesRepo.findById(userId);
     res.render('user/messages', {
