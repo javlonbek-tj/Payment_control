@@ -9,14 +9,6 @@ class MessageRepo {
     );
     return toCamelCase(rows);
   }
-
-  static async findMyMessages(id) {
-    const { rows } = await pool.query(
-      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE userId = $1 ORDER BY messages.created_at DESC;',
-      [id],
-    );
-    return toCamelCase(rows);
-  }
   static async findUnreadMessages(id) {
     const { rows } = await pool.query(
       'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE userId != $1 AND read = false',
