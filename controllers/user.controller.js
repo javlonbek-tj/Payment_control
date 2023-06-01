@@ -1,6 +1,6 @@
 const UserRepo = require('../repos/user-repo');
 const MessageRepo = require('../repos/message-repo');
-const { formatData, getMonth, getPrevMonthDate } = require('../repos/utils/formatData');
+const { formatData, getMonth } = require('../repos/utils/formatData');
 const findByCategories = require('../repos/utils/filtering');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 const AppError = require('../services/AppError');
@@ -50,7 +50,7 @@ const getAllUsers = async (req, res, next) => {
     const courses = await LoadHomePage.allCourses();
     const mentors = await LoadHomePage.allMentors();
     const unreadMessages = await LoadHomePage.unreadMessages(req.user.id);
-    const prevMonth = getMonth(getPrevMonthDate());
+    const currentMonth = getMonth();
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
       users,
@@ -58,7 +58,7 @@ const getAllUsers = async (req, res, next) => {
       courseName,
       courses,
       mentors,
-      prevMonth,
+      currentMonth,
     });
   } catch (err) {
     next(new AppError(err, 500));

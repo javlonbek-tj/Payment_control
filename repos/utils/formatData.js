@@ -6,12 +6,6 @@ const getMonth = queryDate => {
   return ` ${getYear} yil ${getMonth}`;
 };
 
-const getPrevMonthDate = () => {
-  const today = new Date();
-  const prevMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-  return prevMonthDate;
-};
-
 const checkPaymentStatus = item => {
   if (item.paymentstatus === 'not paid') {
     item.paymentstatus = "To'lanmadi";
@@ -44,5 +38,4 @@ const formatData = items => {
 module.exports = {
   formatData,
   getMonth,
-  getPrevMonthDate,
 };
