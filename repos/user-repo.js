@@ -3,11 +3,15 @@ const toCamelCase = require('./utils/to-camel-case');
 
 class UserRepo {
   static async find() {
-    const { rows } = await pool.query('SELECT * FROM users  WHERE role = $1', ['user']);
+    const { rows } = await pool.query('SELECT * FROM users WHERE role = $1;', ['user']);
     return toCamelCase(rows);
   }
   static async findAllUniqueUsers() {
-    const { rows } = await pool.query('SELECT * FROM users  WHERE history = $1 AND role = $2;', ['false', 'user']);
+    const { rows } = await pool.query('SELECT * FROM users  WHERE history = $1 AND role = $2  ORDER BY paymentStatus = $3 DESC;', [
+      'false',
+      'user',
+      'not paid',
+    ]);
     return toCamelCase(rows);
   }
   static async findById(id) {
