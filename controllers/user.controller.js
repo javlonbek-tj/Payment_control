@@ -50,7 +50,7 @@ const getAllUsers = async (req, res, next) => {
     const courses = await LoadHomePage.allCourses();
     const mentors = await LoadHomePage.allMentors();
     const unreadMessages = await LoadHomePage.unreadMessages(req.user.id);
-    const currentMonth = getMonth();
+    const currentMonth = getMonth(Date.now());
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
       users,

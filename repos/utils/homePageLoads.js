@@ -2,30 +2,39 @@ const CourseRepo = require('../course-repo');
 const MentorRepo = require('../mentor-repo');
 const UserRepo = require('../user-repo');
 const UsersByCourse = require('./usersByCourse');
-const { getMonth, getPrevMonthDate } = require('./formatData');
+const { getMonth } = require('./formatData');
 const MessageRepo = require('../message-repo');
 
 const sortUsersByCourses = async (courses, allUsers) => {
-  const prevMonth = getPrevMonthDate().getMonth();
+  const currentMonth = getMonth(Date.now());
   return await Promise.all(
     courses.map(async course => {
       course.courseAllUsers = await UsersByCourse.usersByCourse(allUsers, course.name);
-      course.coursePaidUsers = await UsersByCourse.paidUsers(allUsers, course.name, prevMonth);
+      course.coursePaidUsers = await UsersByCourse.paidUsers(allUsers, course.name, currentMonth);
       return course;
     }),
   );
 };
 
 module.exports = class LoadHomePage {
-  static allUsers = async () => await UserRepo.find();
+  static async allUsers() {
+    const users = await UserRepo.find();
+    return users;
+  }
 
-  static allMentors = async () => await MentorRepo.find();
+  static async allMentors() {
+    const mentors = await MentorRepo.find();
+    return mentors;
+  }
 
-  static allCourses = async () => {
+  static async allCourses() {
     const courses = await CourseRepo.find();
     const allUsers = await LoadHomePage.allUsers();
-    return await sortUsersByCourses(courses, allUsers);
-  };
+    return sortUsersByCourses(courses, allUsers);
+  }
 
-  static unreadMessages = async id => MessageRepo.findUnreadMessages(id);
+  static async unreadMessages(id) {
+    const unreadMessages = await MessageRepo.findUnreadMessages(id);
+    return unreadMessages;
+  }
 };
