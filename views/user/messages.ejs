@@ -31,7 +31,7 @@
           <p class="fs-4"><span class="text-muted"> Kurs: </span><%= myMessage.course %></p>
           <% for(let cash of rejectedCash) {%>
           <p class="fs-4"><span class="text-muted"> Chek: </span> <a href="/<%= cash.paymentcashurl%>" class="fs-4">PDF</a></p>
-
+          <iframe src="/<%= cash.paymentcashurl %>" frameborder="0" class="mb-5"></iframe>
           <% } %>
           <div class="d-flex align-items-center">
             <form action="/deleteMessage" method="POST" class="me-5">
