@@ -9,6 +9,7 @@ exports.up = pgm => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         message VARCHAR(200) NOT NULL,
+        admin BOOLEAN DEFAULT false,
         userId BIGINT REFERENCES users(id),
         read BOOLEAN DEFAULT false
     )

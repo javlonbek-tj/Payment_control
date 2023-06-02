@@ -10,10 +10,10 @@ class MessageRepo {
     return toCamelCase(rows);
   }
 
-  static async findMessagesFromAdmin(role) {
+  static async findMessagesFromAdmin(id, admin) {
     const { rows } = await pool.query(
-      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE users.role = $1 ORDER BY messages.created_at DESC;',
-      [role],
+      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE users.id = $1 AND messages.admin = $2 ORDER BY messages.created_at DESC;',
+      [id, admin],
     );
     return toCamelCase(rows);
   }
@@ -24,11 +24,11 @@ class MessageRepo {
     );
     return toCamelCase(rows);
   }
-  static async insert(text, userId, admin = false) {
-    const { rows } = await pool.query('INSERT INTO messages(message, userId, admin) VALUES ($1, $2, $3) RETURNING *;', [
+  static async insert(text, admin, userId) {
+    const { rows } = await pool.query('INSERT INTO messages(message, admin, userId) VALUES ($1, $2, $3) RETURNING *;', [
       text,
-      userId,
       admin,
+      userId,
     ]);
     return toCamelCase(rows)[0];
   }

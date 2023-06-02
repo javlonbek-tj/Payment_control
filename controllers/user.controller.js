@@ -111,7 +111,7 @@ const postPayment = async (req, res, next) => {
     await UserRepo.uploadCash(pdfCashUrl, userId);
     const user = await UserRepo.changePaymentStatusToProgress(userId);
     const month = getMonth(user.date);
-    await MessageRepo.insert(`${user.firstname} ${month} oyi uchun to'lovni amalga oshirdi`, userId);
+    await MessageRepo.insert(`${user.firstname} ${month} oyi uchun to'lovni amalga oshirdi`, false, userId);
     res.redirect('/');
   } catch (err) {
     next(new AppError(err, 500));
@@ -121,7 +121,7 @@ const postPayment = async (req, res, next) => {
 const getUserMessages = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const myMessages = await MessageRepo.findMessagesFromAdmin('admin');
+    const myMessages = await MessageRepo.findMessagesFromAdmin(userId, true);
     await MessageRepo.makeMessagesRead(userId);
     const rejectedCash = await RejectedCashesRepo.findById(userId);
     res.render('user/messages', {
