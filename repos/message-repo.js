@@ -24,8 +24,12 @@ class MessageRepo {
     );
     return toCamelCase(rows);
   }
-  static async insert(text, userId) {
-    const { rows } = await pool.query('INSERT INTO messages(message, userId) VALUES ($1, $2) RETURNING *;', [text, userId]);
+  static async insert(text, userId, admin = false) {
+    const { rows } = await pool.query('INSERT INTO messages(message, userId, admin) VALUES ($1, $2, $3) RETURNING *;', [
+      text,
+      userId,
+      admin,
+    ]);
     return toCamelCase(rows)[0];
   }
   static async deleteById(id) {

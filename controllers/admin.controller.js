@@ -321,7 +321,7 @@ const rejectPayment = async (req, res, next) => {
     await RejectedCashesRepo.insert(user.paymentcashurl, userId);
     await MessageRepo.deleteById(messageId);
     const month = getMonth(user.date);
-    await MessageRepo.insert(`Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}.`, req.user.id);
+    await MessageRepo.insert(`Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}.`, userId, true);
     res.redirect('/');
   } catch (err) {
     next(new AppError(err, 500));
