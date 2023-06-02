@@ -281,8 +281,8 @@ const deleteUser = async (req, res, next) => {
 
 const getMessages = async (req, res, next) => {
   try {
-    const myMessages = await MessageRepo.findAllWithoutMe(req.user.id);
-    await MessageRepo.makeMessagesRead(req.user.id);
+    const myMessages = await MessageRepo.findAllAdminMessages(false);
+    await MessageRepo.makeMessagesRead(req.user.id, false);
     res.render('admin/messages', {
       pageTitle: 'Xabarlar',
       myMessages,

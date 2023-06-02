@@ -33,8 +33,8 @@ module.exports = class LoadHomePage {
     return sortUsersByCourses(courses, allUsers);
   }
 
-  static async unreadMessages(id) {
-    const unreadMessages = await MessageRepo.findUnreadMessages(id);
+  static async unreadMessages(id, admin) {
+    const unreadMessages = await MessageRepo.findUnreadMessages(id, admin);
     return unreadMessages;
   }
 };

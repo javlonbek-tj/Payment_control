@@ -49,7 +49,8 @@ const getAllUsers = async (req, res, next) => {
     }
     const courses = await LoadHomePage.allCourses();
     const mentors = await LoadHomePage.allMentors();
-    const unreadMessages = await LoadHomePage.unreadMessages(req.user.id);
+    const admin = req.user.role === 'admin' ? false : true;
+    const unreadMessages = await LoadHomePage.unreadMessages(req.user.id, admin);
     const currentMonth = getMonth(Date.now());
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
@@ -121,8 +122,8 @@ const postPayment = async (req, res, next) => {
 const getUserMessages = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const myMessages = await MessageRepo.findMessagesFromAdmin(userId, true);
-    await MessageRepo.makeMessagesRead(userId);
+    const myMessages = await MessageRepo.findMessages(userId, true);
+    await MessageRepo.makeMessagesRead(userId, true);
     const rejectedCash = await RejectedCashesRepo.findById(userId);
     res.render('user/messages', {
       pageTitle: 'Xabarlar',
