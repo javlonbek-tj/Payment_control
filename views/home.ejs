@@ -206,6 +206,32 @@
               </tbody>
             </table>
           </div>
+          <% if(isOverLimit) { %>
+          <div class="pagination mts">
+            <div>
+              <p>Jami <%= total %> ta o'quvchidan <%= limit%> tasi jadvalda aks etmoqda</p>
+            </div>
+            <div>
+              <a href="?page=<%=previousPage %>" class="blocks <%= (currentPage == 1) ? 'disabled' : '' %>"
+              >&laquo;</a
+            >
+            <% if (currentPage !== 1 && previousPage !== 1) { %>
+            <a href="?page=1&course=<%=query.course%>&paymentstatus=<%=query.paymentstatus%>&mentor=<%=query.mentor%&dateFrom=<%=query.dateFrom%>&dateTo=<%=query.dateTo%>&history=<%=query.history%>" class="blocks">1</a>
+            <% } %> <% if (hasPreviousPage) { %>
+            <a href="?page=<%= previousPage %>&course=<%=query.course%>&paymentstatus=<%=query.paymentstatus%>&mentor=<%=query.mentor%&dateFrom=<%=query.dateFrom%>&dateTo=<%=query.dateTo%>&history=<%=query.history%>" class="blocks"><%= previousPage %></a>
+            <% } %>
+            <a href="?page=<%= currentPage %>&course=<%=query.course%>&paymentstatus=<%=query.paymentstatus%>&mentor=<%=query.mentor%&dateFrom=<%=query.dateFrom%>&dateTo=<%=query.dateTo%>&history=<%=query.history%>" class="active blocks"><%= currentPage %></a>
+            <% if (hasNextPage) { %>
+            <a href="?page=<%= nextPage %>&course=<%=query.course%>&paymentstatus=<%=query.paymentstatus%>&mentor=<%=query.mentor%&dateFrom=<%=query.dateFrom%>&dateTo=<%=query.dateTo%>&history=<%=query.history%>" class="blocks"><%= nextPage %></a>
+            <% } %> <% if (lastPage !== currentPage && nextPage !== lastPage) { %>
+            <a href="?page=<%= lastPage %>&course=<%=query.course%>&paymentstatus=<%=query.paymentstatus%>&mentor=<%=query.mentor%&dateFrom=<%=query.dateFrom%>&dateTo=<%=query.dateTo%>&history=<%=query.history%>" class="blocks"><%= lastPage %></a>
+            <% } %>
+            <a href="?page=<%=nextPage %>&course=<%=query.course%>&paymentstatus=<%=query.paymentstatus%>&mentor=<%=query.mentor%&dateFrom=<%=query.dateFrom%>&dateTo=<%=query.dateTo%>&history=<%=query.history%>" class="blocks <%= (currentPage == lastPage) ? 'disabled' : '' %>"
+              >&raquo;</a
+            >
+            </div>
+          </div>
+          <% } %>
         </section>
       </section>
     </div>

@@ -13,11 +13,15 @@ job.start();
 let filteredUsers = [];
 const getAllUsers = async (req, res, next) => {
   try {
+    const limit = 1;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+    let total;
     let users;
     let courseName;
     if (req.query.search) {
       const { search } = req.query;
-      users = await UserRepo.findPartial(search);
+      users = await UserRepo.findPartial(search, limit, offset);
     } else if (
       req.query.course ||
       req.query.mentor ||
@@ -36,10 +40,13 @@ const getAllUsers = async (req, res, next) => {
       if (!history) {
         history = 'false';
       }
-      users = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo, history);
+      const result = await findByCategories(course, mentor, paymentstatus, dateFrom, dateTo, history, limit, offset);
+      total = result.totalUsers;
+      users = result.users;
       courseName = course;
     } else {
-      users = await UserRepo.findAllUniqueUsers();
+      users = await UserRepo.findAllUniqueUsers(limit, offset);
+      total = parseInt(await UserRepo.numberOfUniqueUsers());
     }
     if (users.length > 0) {
       users.map(user => (user.date = getMonth(user.date)));
@@ -49,10 +56,14 @@ const getAllUsers = async (req, res, next) => {
     }
     const courses = await LoadHomePage.allCourses();
     const mentors = await LoadHomePage.allMentors();
-    const adminUnreadMessages = await MessageRepo.findUnreadAdminMessages(false);
-    const userUnreadMessages = await MessageRepo.findUnreadMessages(req.user.id, true);
+    const adminUnreadMessages = await MessageRepo.findAdminUnreadMessages();
+    const userUnreadMessages = await MessageRepo.findUnreadMessages(req.user.id);
     const unreadMessages = req.user.role === 'admin' ? adminUnreadMessages : userUnreadMessages;
     const currentMonth = getMonth(Date.now());
+    let isOverLimit = null;
+    if (total > limit) {
+      isOverLimit = true;
+    }
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
       users,
@@ -61,6 +72,16 @@ const getAllUsers = async (req, res, next) => {
       courses,
       mentors,
       currentMonth,
+      currentPage: page,
+      hasNextPage: limit * page < total,
+      hasPreviousPage: page > 1,
+      nextPage: page + 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(total / limit),
+      isOverLimit,
+      total,
+      limit,
+      query: req.query,
     });
   } catch (err) {
     next(new AppError(err, 500));
@@ -123,8 +144,8 @@ const postPayment = async (req, res, next) => {
 const getUserMessages = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const myMessages = await MessageRepo.findMessages(userId, true);
-    await MessageRepo.makeMessagesRead(userId, true);
+    const myMessages = await MessageRepo.findMessages(userId);
+    await MessageRepo.makeMessagesRead(userId);
     const rejectedCash = await RejectedCashesRepo.findById(userId);
     res.render('user/messages', {
       pageTitle: 'Xabarlar',

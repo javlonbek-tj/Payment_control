@@ -6,13 +6,16 @@ class UserRepo {
     const { rows } = await pool.query('SELECT * FROM users WHERE role = $1;', ['user']);
     return toCamelCase(rows);
   }
-  static async findAllUniqueUsers() {
-    const { rows } = await pool.query('SELECT * FROM users  WHERE history = $1 AND role = $2  ORDER BY paymentStatus = $3 DESC;', [
-      'false',
-      'user',
-      'not paid',
-    ]);
+  static async findAllUniqueUsers(limit, offset) {
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE history = $1 AND role = $2 ORDER BY paymentStatus = $3 DESC LIMIT $4 OFFSET $5;',
+      ['false', 'user', 'not paid', limit, offset],
+    );
     return toCamelCase(rows);
+  }
+  static async numberOfUniqueUsers() {
+    const { rows } = await pool.query('SELECT Count(*) FROM users WHERE history = $1 AND role = $2;', ['false', 'user']);
+    return rows[0].count;
   }
   static async findById(id) {
     const { rows } = await pool.query('SELECT * FROM  users WHERE id = $1;', [id]);
@@ -60,11 +63,11 @@ class UserRepo {
   static async deleteCash(userId) {
     await pool.query(`UPDATE users SET paymentCashUrl = $1 WHERE id = $2 RETURNING *;`, [null, userId]);
   }
-  static async findPartial(query) {
-    const { rows } = await pool.query('SELECT * FROM users WHERE firstname ILIKE $1 OR lastname ILIKE $1 AND role = $2;', [
-      `%${query}%`,
-      'user',
-    ]);
+  static async findPartial(query, limit, offset) {
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE firstname ILIKE $1 OR lastname ILIKE $1 AND role = $2 LIMIT $3 OFFSET $4;',
+      [`%${query}%`, 'user', limit, offset],
+    );
     return toCamelCase(rows);
   }
 
