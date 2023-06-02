@@ -32,9 +32,4 @@ module.exports = class LoadHomePage {
     const allUsers = await LoadHomePage.allUsers();
     return sortUsersByCourses(courses, allUsers);
   }
-
-  static async unreadMessages(id, admin) {
-    const unreadMessages = await MessageRepo.findUnreadMessages(id, admin);
-    return unreadMessages;
-  }
 };

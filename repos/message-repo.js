@@ -24,6 +24,14 @@ class MessageRepo {
     );
     return toCamelCase(rows);
   }
+
+  static async findUnreadAdminMessages(admin) {
+    const { rows } = await pool.query(
+      'SELECT * FROM users JOIN messages ON users.id = messages.userId WHERE read = false AND messages.admin = $1',
+      [admin],
+    );
+    return toCamelCase(rows);
+  }
   static async insert(text, admin, userId) {
     const { rows } = await pool.query('INSERT INTO messages(message, admin, userId) VALUES ($1, $2, $3) RETURNING *;', [
       text,

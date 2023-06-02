@@ -49,8 +49,9 @@ const getAllUsers = async (req, res, next) => {
     }
     const courses = await LoadHomePage.allCourses();
     const mentors = await LoadHomePage.allMentors();
-    const admin = req.user.role === 'admin' ? false : true;
-    const unreadMessages = await LoadHomePage.unreadMessages(req.user.id, admin);
+    const adminUnreadMessages = await MessageRepo.findUnreadAdminMessages(false);
+    const userUnreadMessages = await MessageRepo.findUnreadMessages(req.user.id, true);
+    const unreadMessages = req.user.role === 'admin' ? adminUnreadMessages : userUnreadMessages;
     const currentMonth = getMonth(Date.now());
     res.render('home', {
       pageTitle: "O'quvchilar to'lov nazorati",
