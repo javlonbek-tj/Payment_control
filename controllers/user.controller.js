@@ -13,7 +13,7 @@ job.start();
 let filteredUsers = [];
 const getAllUsers = async (req, res, next) => {
   try {
-    const limit = 1;
+    const limit = 12;
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
     let total;
