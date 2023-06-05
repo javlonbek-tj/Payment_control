@@ -159,6 +159,8 @@ const postAddUser = async (req, res, next) => {
         pageTitle: "Ro'yxatga olish",
         update: null,
         error: true,
+        courses,
+        mentors,
         errorMessage: 'Ushbu login password boshqa foydalanuvchiga tegishli',
         student: {
           firstname,
