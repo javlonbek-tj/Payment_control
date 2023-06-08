@@ -3,7 +3,6 @@ const MentorRepo = require('../mentor-repo');
 const UserRepo = require('../user-repo');
 const UsersByCourse = require('./usersByCourse');
 const { getMonth } = require('./formatData');
-const MessageRepo = require('../message-repo');
 
 const sortUsersByCourses = async (courses, allUsers) => {
   const currentMonth = getMonth(Date.now());
