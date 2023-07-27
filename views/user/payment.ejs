@@ -53,13 +53,13 @@
         <form action="/payment" method="POST" enctype="multipart/form-data">
         <div class="form-group mb-5 d-flex align-items-center">
             <div class="form-element">
-                <input type="file" id="file-1" class="d-none" name="cash" />
+                <input type="file" id="file-1" class="d-none" name="userPhoto" />
                 <label for="file-1" id="file-1-preview" class="ms-3"> 
                     <img src="/image/add_image.png" class="img-fluid bg-white rounded-circle"
-                    style="width: 70px; height: 70px" alt="PDF chek"/>
+                    style="width: 70px; height: 70px" alt="User photo"/>
                 </label>
                 </div>
-                <h4 class="text-muted ms-4 d-flex" id="cash_info">To'lov chekini yuklang</h4>
+                <h4 class="text-muted ms-4 d-flex" id="cash_info">Xodim rasmi</h4>
         </div>
         <div class="form-button mt-5">
           <input type="hidden" name="userId" value="<%= student.id%>"> 

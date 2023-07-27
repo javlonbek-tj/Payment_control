@@ -13,7 +13,6 @@ const sendErrorDev = (err, req, res) => {
 };
 
 const sendErrorProd = (err, req, res) => {
-  console.error('Error:', err);
   res.status(err.statusCode).render('error', {
     pageTitle: 'Xatolik!',
     msg: "Xatolik sodir bo'ldi. Iltimos qaytadan urinib ko'ring",
