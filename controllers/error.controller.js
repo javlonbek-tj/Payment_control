@@ -1,3 +1,5 @@
+const logger = require('../repos/utils/logger');
+
 const get404 = (req, res, next) => {
   res.status(404).render('404', {
     pageTitle: 'Sahifa topilmadi',
@@ -13,6 +15,7 @@ const sendErrorDev = (err, req, res) => {
 };
 
 const sendErrorProd = (err, req, res) => {
+  logger.error(err);
   res.status(err.statusCode).render('error', {
     pageTitle: 'Xatolik!',
     msg: "Xatolik sodir bo'ldi. Iltimos qaytadan urinib ko'ring",

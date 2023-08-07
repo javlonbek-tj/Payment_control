@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const UserRepo = require('../repos/user-repo');
 const { promisify } = require('util');
 const bcrypt = require('bcryptjs');
-const AppError = require('../services/AppError');
+
 
 const createSendToken = (user, req, res) => {
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -21,7 +21,7 @@ const getLogin = async (req, res, next) => {
       pageTitle: 'Kirish',
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -40,7 +40,7 @@ const postLogin = async (req, res, next) => {
     createSendToken(user, req, res);
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -60,7 +60,7 @@ const isAuth = async (req, res, next) => {
       req.user = currentUser;
       return next();
     } catch (err) {
-      return next();
+      next(err);
     }
   }
   next();
@@ -80,7 +80,7 @@ const logout = (req, res, next) => {
     res.clearCookie('jwt');
     res.redirect('/login');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 

@@ -6,7 +6,6 @@ const excelJS = require('exceljs');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
-const AppError = require('../services/AppError');
 const CourseRepo = require('../repos/course-repo');
 const MentorRepo = require('../repos/mentor-repo');
 
@@ -37,7 +36,7 @@ const getAddUser = async (req, res, next) => {
       },
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -50,7 +49,7 @@ const getAddCourse = async (req, res, next) => {
       courses,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -77,7 +76,7 @@ const postAddCourse = async (req, res, next) => {
     await CourseRepo.insert(name);
     res.redirect('/admin/addCourse');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -90,7 +89,7 @@ const getAddMentor = async (req, res, next) => {
       mentors,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -117,7 +116,7 @@ const postAddMentor = async (req, res, next) => {
     await MentorRepo.insert(name);
     res.redirect('/admin/addMentor');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -182,7 +181,7 @@ const postAddUser = async (req, res, next) => {
     }
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -205,7 +204,7 @@ const getUpdateUser = async (req, res, next) => {
       mentors,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -263,7 +262,7 @@ const postUpdateUser = async (req, res, next) => {
     );
     res.redirect(`/users/${userId}`);
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -277,7 +276,7 @@ const deleteUser = async (req, res, next) => {
     await UserRepo.deleteById(userId);
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -290,7 +289,7 @@ const getMessages = async (req, res, next) => {
       myMessages,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -301,7 +300,7 @@ const confirmPayment = async (req, res, next) => {
     await UserRepo.changePaymentStatusToPaid(userId);
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -312,7 +311,7 @@ const payByCash = async (req, res, next) => {
     await UserRepo.changePaymentStatusToPaid(userId);
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -326,7 +325,7 @@ const rejectPayment = async (req, res, next) => {
     await MessageRepo.insert(`Sizning ${month} oyi uchun to'lovingiz rad etildi. ${rejectionReason}.`, true, userId);
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -363,7 +362,7 @@ const getUsersExcel = async (req, res, next) => {
       res.status(200);
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -378,7 +377,7 @@ const getRejectedCashes = async (req, res, next) => {
       rejectedCashes,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -388,7 +387,7 @@ const postDeleteMentor = async (req, res, next) => {
     await MentorRepo.deleteMentor(mentorId);
     res.redirect('/admin/addMentor');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -398,7 +397,7 @@ const postDeleteCourse = async (req, res, next) => {
     await CourseRepo.deleteCourse(courseId);
     res.redirect('/admin/addCourse');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 

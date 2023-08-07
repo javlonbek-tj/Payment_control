@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const upload = require('./services/fileUpload');
+const upload = require('./repos/utils/fileUpload');
 const { isAuth } = require('./controllers/auth.controller');
 const { get404, globalErrorHandler } = require('./controllers/error.controller');
 const cookieParser = require('cookie-parser');

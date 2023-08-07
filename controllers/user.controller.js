@@ -3,7 +3,6 @@ const MessageRepo = require('../repos/message-repo');
 const { formatData, getMonth } = require('../repos/utils/formatData');
 const findByCategories = require('../repos/utils/filtering');
 const RejectedCashesRepo = require('../repos/rejectedCashes-repo');
-const AppError = require('../services/AppError');
 const job = require('../repos/utils/cronJob');
 const LoadHomePage = require('../repos/utils/homePageLoads');
 
@@ -84,7 +83,7 @@ const getAllUsers = async (req, res, next) => {
       query: req.query,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -105,7 +104,7 @@ const getOneUser = async (req, res, next) => {
       rejectedCash,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -123,7 +122,7 @@ const getPayment = async (req, res, next) => {
       month,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -137,7 +136,7 @@ const postPayment = async (req, res, next) => {
     await MessageRepo.insert(`${user.firstname} ${month} oyi uchun to'lovni amalga oshirdi`, false, userId);
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -153,7 +152,7 @@ const getUserMessages = async (req, res, next) => {
       rejectedCash,
     });
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
@@ -164,7 +163,7 @@ const deleteMessage = async (req, res, next) => {
     await MessageRepo.deleteById(messageId);
     res.redirect('/');
   } catch (err) {
-    next(new AppError(err, 500));
+    next(err);
   }
 };
 
